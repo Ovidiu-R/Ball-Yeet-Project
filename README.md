@@ -1,1 +1,4 @@
 # Ball-Yeet-Project
+My first foray into the world of 2D physics games.
+The purpose of this exercise is to get me acquainted with the use of <canvas> by building a simple physics engine that will allow the user to throw a ball which will be affected by gravity and will interact with obstacles in a quasi-realistic manner. The ball is expected to bounce off surfaces, roll down slopes and come to a halt on flat surfaces due to friction. The goal of the game is for the ball to touch a hoop, upon which the level will be complete and progression to the next will be available.
+The intended launch mechanism will be through a traditional angle + power input via mouse drag and drop. This can later be gamified for extra challenge.
