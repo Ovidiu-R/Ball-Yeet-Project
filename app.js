@@ -1,9 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('gameCanvas');
+    const rect = canvas.getBoundingClientRect();
     canvas.tabIndex = 0;
     canvas.focus();
     const ctx = canvas.getContext('2d');
     let raf;
+
 
     let ball = {
         x: 100,
@@ -23,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     function clear() {
-        ctx.fillStyle = "rgb(0 255 255 / 30%";
+        ctx.fillStyle = "rgb(0 255 255 / 20%";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
 
@@ -33,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ball.x += ball.vx;
         ball.y += ball.vy;
         ball.vy *= 0.99;
-        ball.vy += 0.50;
+        ball.vy += 0.55;
 
         if (ball.y + ball.vy > canvas.height - ball.radius || ball.y + ball.vy < ball.radius) {
             ball.vy = -ball.vy;
@@ -48,35 +50,46 @@ document.addEventListener('DOMContentLoaded', () => {
     function startAnimation() {
         raf = window.requestAnimationFrame(draw);
     };
-    canvas.addEventListener('mouseover', startAnimation);
 
-    canvas.addEventListener('mouseout', (e) => {
+    function stopAnimation() {
         window.cancelAnimationFrame(raf);
-    });
+    }
 
-    function controlToggle(e) {
+    function controlToggle() {
+        console.log('flag4');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
         clear();
-        ball.x = e.clientX;
-        ball.y = e.clientY;
+        ball.x = mouseX - rect.left;
+        ball.y = mouseY - rect.top;
         ball.draw();
     }
 
+    // E V E N T   L I S T E N E R S
+
+    canvas.addEventListener('mouseover', startAnimation);
+
+    // canvas.addEventListener('mouseout', stopAnimation);
+    
+    canvas.addEventListener('mousemove', function(e) {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+    })
+
     canvas.addEventListener('keydown', (function() {
-        console.log('flag 1');
         let isToggled = false;
         return function(event) {
-            console.log('flag 2');
             if(event.key ==='e') {
-                console.log('flag 3');
                 isToggled = !isToggled;
                 if(isToggled) {
+                    stopAnimation();
+                    controlToggle();
                     canvas.removeEventListener('mouseover', startAnimation);
-                    
-                    canvas.addEventListener('mouseover', controlToggle(event)); 
+                    canvas.addEventListener('mousemove', controlToggle); 
                     
                 } else {
-                    canvas.removeEventListener('mouseover', controlToggle);
-                    canvas.addEventListener('mouseover', startAnimation);
+                    canvas.removeEventListener('mousemove', controlToggle);
+                    startAnimation();
+                    // canvas.addEventListener('mouseover', startAnimation);
                 }
             }
         }
