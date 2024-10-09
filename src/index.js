@@ -1,13 +1,16 @@
 import './style.css';
 // import { gameLoop } from './fpsCounter.js';
 
-document.addEventListener('DOMContentLoaded', () => {
+// document.addEventListener('DOMContentLoaded', () => {
+    window.onload = () => {
     const canvas = document.getElementById('gameCanvas');
     const rect = canvas.getBoundingClientRect();
     canvas.tabIndex = 0;
     canvas.focus();
     const ctx = canvas.getContext('2d');
     let raf;
+    let mouseX;
+    let mouseY;
 
 
     let ball = {
@@ -28,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     function clear() {
+        console.log('clear function has run');
         ctx.fillStyle = "rgb(0 255 255 / 20%";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
@@ -64,6 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
         clear();
         ball.x = mouseX - rect.left;
         ball.y = mouseY - rect.top;
+        console.log(ball.x);
         ball.draw();
     }
 
@@ -76,6 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
     canvas.addEventListener('mousemove', function(e) {
         mouseX = e.clientX;
         mouseY = e.clientY;
+        console.log(mouseX, mouseY);
     })
 
     canvas.addEventListener('keydown', (function() {
@@ -99,4 +105,4 @@ document.addEventListener('DOMContentLoaded', () => {
     })());
 
     ball.draw();
-})
+};
