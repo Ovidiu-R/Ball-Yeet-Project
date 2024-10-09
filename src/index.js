@@ -1,8 +1,7 @@
 import './style.css';
-// import { gameLoop } from './fpsCounter.js';
+import { gameLoop } from './fpsCounter.js';
 
-// document.addEventListener('DOMContentLoaded', () => {
-    window.onload = () => {
+document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('gameCanvas');
     const rect = canvas.getBoundingClientRect();
     canvas.tabIndex = 0;
@@ -18,7 +17,7 @@ import './style.css';
         y: 250,
         vx: 5,
         vy: 2,
-        radius: 30,
+        radius: 18,
         color: 'blue',
 
         draw() {
@@ -42,7 +41,7 @@ import './style.css';
         ball.x += ball.vx;
         ball.y += ball.vy;
         ball.vy *= 0.99;
-        ball.vy += 0.55;
+        ball.vy += 0.40;
 
         if (ball.y + ball.vy > canvas.height - ball.radius || ball.y + ball.vy < ball.radius) {
             ball.vy = -ball.vy;
@@ -55,11 +54,18 @@ import './style.css';
     }
 
     function startAnimation() {
-        raf = window.requestAnimationFrame(draw);
+        gameLoop();
+        if (!raf) {
+            raf = window.requestAnimationFrame(draw);
+        }
     };
 
     function stopAnimation() {
-        window.cancelAnimationFrame(raf);
+        if(raf) {
+            window.cancelAnimationFrame(raf);
+            raf = null;
+        }
+
     }
 
     function controlToggle() {
@@ -85,6 +91,7 @@ import './style.css';
     })
 
     canvas.addEventListener('keydown', (function() {
+        gameLoop();
         let isToggled = false;
         return function(event) {
             if(event.key ==='e') {
@@ -105,4 +112,4 @@ import './style.css';
     })());
 
     ball.draw();
-};
+});

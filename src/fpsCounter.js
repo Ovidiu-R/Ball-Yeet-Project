@@ -12,15 +12,16 @@ export function gameLoop(time) {
 
     frameCount++;
 
-    if (frameCount >= 60) {
+    if (frameCount >= 60 && deltaTime >0) {
         fps = (1000 / deltaTime).toFixed(1); // Get smooth fps value
         frameCount = 0;
     }
 
     //Clear top left corner of canvas in order to update framerate value
-    ctx.clearRect(0, 0, 100, 50);
-    ctx.font = '20px Arial';
-    ctx.fillStyle = 'white';
-    ctx.fillText(`FPS: ${fps}`, 10, 30);
+    ctx.clearRect(0, 0, 64, 17);
+
+    ctx.font = '12px Arial';
+    ctx.fillStyle = 'black';
+    ctx.fillText(`FPS: ${fps}`, 10, 15);
     requestAnimationFrame(gameLoop);
 }
