@@ -1,3 +1,6 @@
+import './style.css';
+// import { gameLoop } from './fpsCounter.js';
+
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('gameCanvas');
     const rect = canvas.getBoundingClientRect();
