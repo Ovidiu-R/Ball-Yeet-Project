@@ -5,7 +5,7 @@ let lastTime = performance.now();
 let frameCount = 0;
 let fps = 0;
 
-export function gameLoop(time) {
+export function fpsCounter(time) {
     //Calculate delta time between frames
     const deltaTime = time - lastTime;
     lastTime = time;
@@ -23,5 +23,5 @@ export function gameLoop(time) {
     ctx.font = '12px Arial';
     ctx.fillStyle = 'black';
     ctx.fillText(`FPS: ${fps}`, 10, 15);
-    requestAnimationFrame(gameLoop);
+    requestAnimationFrame(fpsCounter);
 }
