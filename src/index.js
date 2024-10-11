@@ -12,50 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let mouseY;
 
 
-    class Ball {
-        constructor(x, y, angle, power, radius = 30, color = 'blue') {
-            this.position = {x: x, y: y};
-            this.velocity = this.calculateVelocity(angle, power);
-            this.radius = radius;
-            this.color = color;
-        }
-
-        //Method to calculate initial velocity based on angle and power
-        calculateVelocity(angle, power) {
-            const radians = angle * (Math.PI / 180);
-            return {
-                x: power * Math.cos(radians),
-                y: power * Math.sin(radians)
-            };
-        }
-
-        draw(ctx) {
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.radius, 0, Math.PI *2, true);
-            ctx.closePath();
-            ctx.fillStyle = this.color;
-            ctx.fill();
-        }
-
-        update() {
-            this.position.x += this.velocity.x;
-            this.position.y += this.velocity.y;
-
-            //Gravity effect
-            this.velocity.y += 0.55;
-
-            //Bouncing logic
-            if (this.position.y + this.velocity.y > canvas.height - this.radius ||
-               this.position.y + this.velocity.y < this.radius) {
-                    this.velocity.y = -this.velocity.y;
-               }
-            if (this.position.x + this.velocity.x > canvas.width - this.radius || 
-                this.position.x + this.velocity.x < this.radius) {
-                    this.velocity.x = -this.velocity.x;
-            }
-            
-        }
-    }
+    
 
     function gameLoop() {
         clearCanvas();
@@ -65,27 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
         //Update walls if level changes
     }
 
-    let startX, startY, endX, endY;
-    canvas.addEventListener('mouseover', (e) => {
-        canvas.addEventListener('mousedown', (e) => {
-            startX = e.clientX - canvas.getBoundingClientRect().left;
-            startY = e.clientY - canvas.getBoundingClientRect().top;
-        });
-        canvas.addEventListener('mouseup', (e) => {
-            endX = e.clientX - canvas.getBoundingClientRect().left;
-            endY = e.clientY - canvas.getBoundingClientRect().top;
-            calculateLaunchAngle(startX, startY, endX, endY);
-            calculateLaunchPower(startX, startY, endX, endY);
-        });
-        
-    });
-
-    function calculateLaunchAngle(startX, startY, endX, endY) {
-
-    };
-
-    function calculateLaunchPower(startX, startY, endX, endY) {
-    };
+    
 
 
     // O L D   C O D E
