@@ -1,4 +1,4 @@
-import { getLaunchArrowCoords } from '../interactivityHandler';
+import { getLaunchArrowCoords } from './interactivityHandler';
 export class Ball {
     constructor(x, y, vx, vy, radius = 30, color = 'blue') {
         this.position = {x: x, y: y};
@@ -6,15 +6,6 @@ export class Ball {
         this.radius = radius;
         this.color = color;
     }
-
-    //Method to calculate initial velocity based on angle and power
-    // calculateVelocity(angle, power) {
-    //     const radians = angle * (Math.PI / 180);
-    //     return {
-    //         x: power * Math.cos(radians),
-    //         y: power * Math.sin(radians)
-    //     };
-    // }
 
     draw(ctx) {
         ctx.beginPath();
@@ -41,6 +32,11 @@ export class Ball {
                 this.velocity.x = -this.velocity.x;
         }
         
+    }
+
+    isMouseOver(mouseX, mouseY) {
+        const distance = Math.sqrt((mouseX - this.x) ** 2 + (mouseY - this.y) ** 2);
+        return distance <= this.radius;
     }
 }
 

@@ -1,4 +1,6 @@
 import './style.css';
+import { Ball } from './gameObjects.js';
+import { gameLoop } from './gameLoop.js';
 import { fpsCounter } from './fpsCounter.js';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -12,16 +14,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let mouseY;
 
 
+    let newBall = new Ball(300, 300, 0, 0, radius = 30, color = 'red');
+    newBall.draw();
     
-
-    function gameLoop() {
-        clearCanvas();
-        //Draw ball
-        //Draw walls
-        //Update ball
-        //Update walls if level changes
-    }
-
     
 
 
@@ -55,6 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ball.draw();
         ball.x += ball.vx;
         ball.y += ball.vy;
+        console.log(ball.x, ball.y);
         ball.vy *= 0.99;
         ball.vy += 0.40;
 
@@ -84,12 +80,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function controlToggle() {
-        console.log('flag4');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         clearCanvas();
         ball.x = mouseX - rect.left;
         ball.y = mouseY - rect.top;
-        console.log(ball.x);
         ball.draw();
     }
 
