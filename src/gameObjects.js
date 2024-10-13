@@ -22,33 +22,54 @@ export class Ball {
         ctx.fill();
     }
 
-    update(newX = null, newY = null, newVx = null, newVy = null) {
-        this.position.x += this.velocity.x;
-        this.position.y += this.velocity.y;
+    update(launchVelocityX = undefined, launchVelocityY = undefined) {
+        if (launchVelocityX !== undefined) {
+            this.velocity.x = launchVelocityX;
+            this.velocity.y = launchVelocityY;
+            this.velocity.y += 0.30;
+        }
+        if (this.collisionData.horizontal === true) {
+            console.log('horizontal flip expected');
+            this.velocity.x = -this.velocity.x * 0.9;
+            this.collisionData.horizontal = false;
+        } else {this.position.x += this.velocity.x;};
+        if (this.collisionData.vertical === true) {
+            console.log('vertical flip expected');
+            this.velocity.y = -this.velocity.y * 0.9;
+            this.collisionData.vertical = false;
+        } else {this.position.y += this.velocity.y;}
 
         //Gravity effect
-        this.velocity.y += 0.55;
+        // this.velocity.y += 0.30;
 
         
     }
 
     isMouseOver(mouseX, mouseY) {
-        const distance = Math.sqrt((mouseX - this.x) ** 2 + (mouseY - this.y) ** 2);
+        const distance = Math.sqrt((mouseX - this.position.x) ** 2 + (mouseY - this.position.y) ** 2);
         return distance <= this.radius;
     }
 }
 
 
 export class launchArrow {
-    constructor(originX, originY, endX, endY) {
+    constructor(originX, originY, endX, endY, color) {
         this.origin = {x: originX, y: originY};
         this.end = {x: endX, y: endY};
+        this.visibility = false;
+        this.color = color;
+    }
+
+    update(endX, endY, visibility) {
+        this.end.x = endX;
+        this.end.y = endY;
+        this.visibility = visibility;
     }
 
     getArrowHeadEdges() {
         const leftEdgeAngle = 245 * Math.PI / 180;
         const rightEdgeAngle = 295 * Math.PI / 180;
-        const edgeLength = 50;
+        const edgeLength = 70;
         const arrowTipCoords = getLaunchArrowCoords();
         const leftEdgeCoords = {
             x: arrowTipCoords.arrowX + edgeLength * Math.cos(leftEdgeAngle),
@@ -61,14 +82,17 @@ export class launchArrow {
         return {leftEdgeCoords, rightEdgeCoords};
     }
 
-    draw(ctx) {
-        const arrow = this.getArrowHeadEdges();
-        ctx.beginPath();
-        ctx.moveTo(this.origin.x, this.origin.y);
-        ctx.lineTo(this.end.x, this.end.y);
-        ctx.lineTo(arrow.leftEdgeCoords.x, arrow.leftEdgeCoords.y);
-        ctx.moveTo(this.end.x, this.end.y);
-        ctx.lineTo(arrow.rightEdgeCoords.x, arrow.rightEdgeCoords.y);
-        ctx.stroke();
+    draw() {
+        if (this.visibility === true) {
+            const arrow = this.getArrowHeadEdges();
+            ctx.beginPath();
+            ctx.moveTo(this.origin.x, this.origin.y);
+            ctx.lineTo(this.end.x, this.end.y);
+            ctx.lineTo(arrow.leftEdgeCoords.x, arrow.leftEdgeCoords.y);
+            ctx.moveTo(this.end.x, this.end.y);
+            ctx.lineTo(arrow.rightEdgeCoords.x, arrow.rightEdgeCoords.y);
+            ctx.stroke();
+        }
+        
     }
 }

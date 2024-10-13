@@ -8,11 +8,13 @@ if (newBall.position.y + newBall.velocity.y > canvas.height - newBall.radius ||
     newBall.position.y + newBall.velocity.y < newBall.radius) {
         collisionDetected = true;
         newBall.collisionData.vertical = true;
+        console.log('vertical collision detected');
     }
  if (newBall.position.x + newBall.velocity.x > canvas.width - newBall.radius || 
      newBall.position.x + newBall.velocity.x < newBall.radius) {
         collisionDetected = true;
         newBall.collisionData.horizontal = true;
+        console.log('horizontal collision detected');
  }
  return collisionDetected;
 }

@@ -1,9 +1,10 @@
 import './style.css';
-import { Ball } from './gameObjects.js';
+import { Ball, launchArrow } from './gameObjects.js';
 import { gameLoop } from './gameLoop.js';
 import { fpsCounter } from './fpsCounter.js';
 
 export let newBall;
+export let newArrow;
 
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('gameCanvas');
@@ -18,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     //Create and export single instance of Ball class that will be used throughout the codebase
     newBall = new Ball(100, 400, 0, 0, 18, 'red');
     newBall.draw(ctx);
+    newArrow = new launchArrow (100, 400, 0, 0, 'black')
     gameLoop();
     
 
