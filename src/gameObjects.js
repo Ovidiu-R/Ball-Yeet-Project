@@ -1,4 +1,6 @@
 import { getLaunchArrowCoords } from './interactivityHandler';
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
 
 export class Ball {
     constructor(x, y, vx, vy, radius = 30, color = 'blue') {
@@ -6,9 +8,13 @@ export class Ball {
         this.velocity = {x: vx, y: vy};
         this.radius = radius;
         this.color = color;
+        this.collisionData = {
+            horizontal: false,
+            vertical: false
+        };
     }
 
-    draw(ctx) {
+    draw() {
         ctx.beginPath();
         ctx.arc(this.position.x, this.position.y, this.radius, 0, Math.PI *2, true);
         ctx.closePath();
@@ -16,22 +22,13 @@ export class Ball {
         ctx.fill();
     }
 
-    update() {
+    update(newX = null, newY = null, newVx = null, newVy = null) {
         this.position.x += this.velocity.x;
         this.position.y += this.velocity.y;
 
         //Gravity effect
         this.velocity.y += 0.55;
 
-        //Bouncing logic
-        if (this.position.y + this.velocity.y > canvas.height - this.radius ||
-           this.position.y + this.velocity.y < this.radius) {
-                this.velocity.y = -this.velocity.y;
-           }
-        if (this.position.x + this.velocity.x > canvas.width - this.radius || 
-            this.position.x + this.velocity.x < this.radius) {
-                this.velocity.x = -this.velocity.x;
-        }
         
     }
 
