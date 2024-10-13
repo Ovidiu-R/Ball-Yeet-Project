@@ -1,4 +1,5 @@
 import { getLaunchArrowCoords } from './interactivityHandler';
+
 export class Ball {
     constructor(x, y, vx, vy, radius = 30, color = 'blue') {
         this.position = {x: x, y: y};
@@ -39,6 +40,7 @@ export class Ball {
         return distance <= this.radius;
     }
 }
+
 
 export class launchArrow {
     constructor(originX, originY, endX, endY) {
