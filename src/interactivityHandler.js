@@ -2,16 +2,18 @@ import { Ball } from "./gameObjects";
 import { newBall } from ".";
 
 const canvas = document.getElementById('gameCanvas');
-let startX, startY;
-let powerScale = 0.03;
+let startY;
+let powerScale = 0.12;
 export let launchVelocity = undefined; //Will have to reset this once it has been altered
-export let endX, endY;
+export let endX, endY, startX;
+let mouseDownFlag = false;
 
 function getMouseDownCoords (e) {
     const rect = canvas.getBoundingClientRect();
     startX = e.clientX - rect.left;
     startY = e.clientY - rect.top;
     console.log('start', startX, startY);
+    mouseDownFlag = true;
 }
 
 function getMouseUpCoords (e) {
@@ -26,6 +28,8 @@ function getMouseUpCoords (e) {
     //Remove event listeners once the mouse button is released
     canvas.removeEventListener('mousedown', getMouseDownCoords);
     canvas.removeEventListener('mouseup', getMouseUpCoords);
+    mouseDownFlag = false;
+    // endX, endY = undefined;
 }
 
 
@@ -38,7 +42,9 @@ canvas.addEventListener('mousemove', (e) => {
     //Check if mouse cursor is over the ball.
     if (newBall.isMouseOver(mouseX, mouseY)) {
         canvas.addEventListener('mousedown', getMouseDownCoords);
-        canvas.addEventListener('mouseup', getMouseUpCoords); //Mousedown outside ball and mouseup on ball will cause issuess
+        if (mouseDownFlag) {
+            canvas.addEventListener('mouseup', getMouseUpCoords);
+        }
             
     } else {
         //Remove event listeners if mouse moves off ball
@@ -58,5 +64,5 @@ export function calculateLaunchVelocity(startX, startY, endX, endY) {
     const distanceY = endY - startY;
     const launchVelocityX = - distanceX * powerScale;
     const launchVelocityY = - distanceY * powerScale;
-    return {launchVelocityX, launchVelocityY};
+    return {x: launchVelocityX, y: launchVelocityY};
 };

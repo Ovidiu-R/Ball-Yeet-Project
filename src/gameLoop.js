@@ -1,12 +1,17 @@
 import { Ball, launchArrow } from "./gameObjects";
 import { basicHandler } from "./collisionHandler";
-import { launchVelocity, getLaunchArrowCoords, endX, endY } from "./interactivityHandler";
+import { launchVelocity, getLaunchArrowCoords, endX, endY, startX } from "./interactivityHandler";
 import { newBall, newArrow } from ".";
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
+// let lastTime = performance.now();
 
 
 export function gameLoop() {
+    const currentTime = performance.now();
+    // let dt = (currentTime - lastTime) / 1000;
+    // lastTime = currentTime;
+
     clearCanvas();
     if (endX !== undefined) {
         let arrowTip = getLaunchArrowCoords();
@@ -14,17 +19,13 @@ export function gameLoop() {
     }
     
     if (launchVelocity !== undefined) {
-        newBall.update(launchVelocity.launchVelocityX, launchVelocity.launchVelocityY);
+        newBall.launch(launchVelocity.x, launchVelocity.y);
+        launchVelocity = undefined;
     }
     newBall.update();
     if (basicHandler()) {
         newBall.update();
     }
-    
-
-    
-    
-    //Check for collisions a second time to make sure first collision resolution didn't cause another
     newBall.draw();
     newArrow.draw();
     //Check game state(collision with goal should result in points or a level change, in which case the gameLoop should be ended instantly to save on resources and new level should be loaded

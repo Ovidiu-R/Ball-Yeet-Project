@@ -1,11 +1,14 @@
 import { endY, getLaunchArrowCoords } from './interactivityHandler';
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
+const gravity = 10; //Assume 1 meter equals 100 pixels and factor in Earth gravity
+// const dt = 1 / 60; //
 
 export class Ball {
     constructor(x, y, vx, vy, radius = 30, color = 'blue') {
         this.position = {x: x, y: y};
         this.velocity = {x: vx, y: vy};
+        this.isLaunched = false;
         this.radius = radius;
         this.color = color;
         this.collisionData = {
@@ -21,23 +24,33 @@ export class Ball {
         ctx.fillStyle = this.color;
         ctx.fill();
     }
-
-    update(launchVelocityX = undefined, launchVelocityY = undefined) {
+    launch(launchVelocityX = undefined, launchVelocityY = undefined) {
         if (launchVelocityX !== undefined) {
             this.velocity.x = launchVelocityX;
             this.velocity.y = launchVelocityY;
-            this.velocity.y += 0.30;
+            this.isLaunched = true;
+            console.log (this.velocity.x, this.velocity.y);
         }
+    }
+    update() {
+        if (this.isLaunched) {
+            this.velocity.y += 0.15;
+            // this.velocity.y += gravity * dt;
+        }
+
+        //Flip velocity on and decrease velocity on each collision
         if (this.collisionData.horizontal === true) {
-            console.log('horizontal flip expected');
-            this.velocity.x = -this.velocity.x * 0.9;
+            this.velocity.x = -this.velocity.x * 0.8;
+            
             this.collisionData.horizontal = false;
         } else {this.position.x += this.velocity.x;};
         if (this.collisionData.vertical === true) {
-            console.log('vertical flip expected');
-            this.velocity.y = -this.velocity.y * 0.9;
+            this.velocity.y = -this.velocity.y * 0.8;
             this.collisionData.vertical = false;
         } else {this.position.y += this.velocity.y;}
+        // if (this.isLaunched && Math.abs(this.velocity.y) < 0.1){
+        //     this.position.y = 500;
+        // }
 
         //Gravity effect
         // this.velocity.y += 0.30;
@@ -66,11 +79,24 @@ export class launchArrow {
         this.visibility = visibility;
     }
 
+    getArrowLength() {
+        const distance = Math.sqrt((this.origin.x - this.end.x) ** 2 + (this.origin.y - this.end.y) ** 2);
+        console.log('distance', distance);
+        return distance;
+    }
+
     getArrowHeadEdges() {
         const edgeAngleOffset = 200 * Math.PI / 180;
-        const edgeLength = 50;
+        let edgeLength;
         const arrowTipCoords = getLaunchArrowCoords();
 
+        if (this.getArrowLength() < 100) {
+            edgeLength = this.getArrowLength() / 2;
+        } else if (100 <= this.getArrowLength() <200){
+            edgeLength = this.getArrowLength() / 3;
+        } else {
+            edgeLength = this.getArrowLength() / 4;
+        }
         //Compute angle of the arrow shaft
         const shaftAngle = Math.atan2(this.end.y - this.origin.y, this.end.x - this.origin.x)
 
