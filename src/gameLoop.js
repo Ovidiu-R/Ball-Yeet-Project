@@ -1,6 +1,6 @@
 import { Ball, launchArrow } from "./gameObjects";
 import { basicHandler } from "./collisionHandler";
-import { launchVelocity, endX, endY } from "./interactivityHandler";
+import { launchVelocity, getLaunchArrowCoords, endX, endY } from "./interactivityHandler";
 import { newBall, newArrow } from ".";
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
@@ -9,7 +9,8 @@ const ctx = canvas.getContext('2d');
 export function gameLoop() {
     clearCanvas();
     if (endX !== undefined) {
-        newArrow.update(endX, endY, true);
+        let arrowTip = getLaunchArrowCoords();
+        newArrow.update(arrowTip.x, arrowTip.y, true);
     }
     
     if (launchVelocity !== undefined) {

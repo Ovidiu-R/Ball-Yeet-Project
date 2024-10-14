@@ -1,4 +1,4 @@
-import { getLaunchArrowCoords } from './interactivityHandler';
+import { endY, getLaunchArrowCoords } from './interactivityHandler';
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
@@ -67,17 +67,25 @@ export class launchArrow {
     }
 
     getArrowHeadEdges() {
-        const leftEdgeAngle = 245 * Math.PI / 180;
-        const rightEdgeAngle = 295 * Math.PI / 180;
-        const edgeLength = 70;
+        const edgeAngleOffset = 200 * Math.PI / 180;
+        const edgeLength = 50;
         const arrowTipCoords = getLaunchArrowCoords();
+
+        //Compute angle of the arrow shaft
+        const shaftAngle = Math.atan2(this.end.y - this.origin.y, this.end.x - this.origin.x)
+
+        //Calculate angles for left and right edges of arrowhead
+        const leftEdgeAngle = shaftAngle + edgeAngleOffset;
+        const rightEdgeAngle = shaftAngle - edgeAngleOffset;
+
+        //Calculate coordinates for segments making up the left and right edges of the arrowhead
         const leftEdgeCoords = {
-            x: arrowTipCoords.arrowX + edgeLength * Math.cos(leftEdgeAngle),
-            y: arrowTipCoords.arrowY + edgeLength * Math.sin(leftEdgeAngle),
+            x: arrowTipCoords.x + edgeLength * Math.cos(leftEdgeAngle),
+            y: arrowTipCoords.y + edgeLength * Math.sin(leftEdgeAngle),
         }
         const rightEdgeCoords = {
-            x: arrowTipCoords.arrowX + edgeLength * Math.cos(rightEdgeAngle),
-            y: arrowTipCoords.arrowY + edgeLength * Math.sin(rightEdgeAngle),
+            x: arrowTipCoords.x + edgeLength * Math.cos(rightEdgeAngle),
+            y: arrowTipCoords.y + edgeLength * Math.sin(rightEdgeAngle),
         }
         return {leftEdgeCoords, rightEdgeCoords};
     }

@@ -50,7 +50,7 @@ canvas.addEventListener('mousemove', (e) => {
 export function getLaunchArrowCoords() {
     const arrowX = 2 * startX - endX;
     const arrowY = 2 * startY - endY;
-    return {arrowX, arrowY};
+    return { x: arrowX, y: arrowY};
 }
 
 export function calculateLaunchVelocity(startX, startY, endX, endY) {
