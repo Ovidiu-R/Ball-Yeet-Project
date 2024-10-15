@@ -1,14 +1,14 @@
 import { endY, getLaunchArrowCoords } from './interactivityHandler';
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
-const gravity = 10; //Assume 1 meter equals 100 pixels and factor in Earth gravity
-// const dt = 1 / 60; //
 
 export class Ball {
     constructor(x, y, vx, vy, radius = 30, color = 'blue') {
         this.position = {x: x, y: y};
         this.velocity = {x: vx, y: vy};
+        this.windSpeed = undefined;
         this.isLaunched = false;
+        this.isGrounded = false;
         this.radius = radius;
         this.color = color;
         this.collisionData = {
@@ -28,34 +28,41 @@ export class Ball {
         if (launchVelocityX !== undefined) {
             this.velocity.x = launchVelocityX;
             this.velocity.y = launchVelocityY;
+            this.windSpeed = Math.random() * 0.2 - 0.1; //Apply a random wind vector between -2 and 2
+            this.velocity.x += this.windSpeed;
             this.isLaunched = true;
-            console.log (this.velocity.x, this.velocity.y);
+            // console.log (this.velocity.x, this.velocity.y);
         }
     }
     update() {
         if (this.isLaunched) {
-            this.velocity.y += 0.15;
-            // this.velocity.y += gravity * dt;
+            this.velocity.y += 0.25; //Apply gravity
+            if (this.isGrounded) {   //Apply friction with velocity cutoff point
+                this.velocity.x *= 0.99;
+                // if (this.velocity.x > 0.01) {
+                //     this.velocity.x *= 0.99;
+                // } else {this.velocity.x = 0;}
+                
+            } else {
+                this.velocity.x += this.windSpeed; //Add wind speed while ball is airborne
+            }             
         }
 
         //Flip velocity on and decrease velocity on each collision
         if (this.collisionData.horizontal === true) {
-            this.velocity.x = -this.velocity.x * 0.8;
-            
+            this.velocity.x = -this.velocity.x * 0.6;
             this.collisionData.horizontal = false;
         } else {this.position.x += this.velocity.x;};
         if (this.collisionData.vertical === true) {
-            this.velocity.y = -this.velocity.y * 0.8;
+            this.velocity.y = -this.velocity.y * 0.6;
             this.collisionData.vertical = false;
         } else {this.position.y += this.velocity.y;}
-        // if (this.isLaunched && Math.abs(this.velocity.y) < 0.1){
-        //     this.position.y = 500;
-        // }
 
-        //Gravity effect
-        // this.velocity.y += 0.30;
-
-        
+        if (this.isLaunched && Math.abs(this.velocity.y) < 0.1 && this.position.y > (canvas.height - this.radius)){
+            this.position.y = canvas.height - this.radius;
+            this.isGrounded = true;
+        }
+ 
     }
 
     isMouseOver(mouseX, mouseY) {
@@ -81,7 +88,7 @@ export class launchArrow {
 
     getArrowLength() {
         const distance = Math.sqrt((this.origin.x - this.end.x) ** 2 + (this.origin.y - this.end.y) ** 2);
-        console.log('distance', distance);
+        // console.log('distance', distance);
         return distance;
     }
 

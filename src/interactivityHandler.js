@@ -1,19 +1,36 @@
 import { Ball } from "./gameObjects";
-import { newBall } from ".";
+import { newBall, newArrow } from ".";
 
 const canvas = document.getElementById('gameCanvas');
 let startY;
-let powerScale = 0.12;
+let powerScale = 0.20;
 export let launchVelocity = undefined; //Will have to reset this once it has been altered
-export let endX, endY, startX;
+export let endX, endY, startX = undefined;
 let mouseDownFlag = false;
+
+function handleMouseDown(e) {
+    mouseDownFlag = true;
+    getMouseDownCoords(e);
+
+    canvas.addEventListener('mousemove', trackMouseMove);
+    canvas.addEventListener('mouseup', handleMouseUp);
+}
 
 function getMouseDownCoords (e) {
     const rect = canvas.getBoundingClientRect();
     startX = e.clientX - rect.left;
     startY = e.clientY - rect.top;
     console.log('start', startX, startY);
-    mouseDownFlag = true;
+
+}
+
+function handleMouseUp(e) {
+    getMouseUpCoords(e);
+
+    canvas.removeEventListener('mousemove', trackMouseMove);
+    canvas.removeEventListener('mouseup', handleMouseUp);
+    startX, startY = undefined;
+    mouseDownFlag = false;
 }
 
 function getMouseUpCoords (e) {
@@ -25,13 +42,15 @@ function getMouseUpCoords (e) {
     //Calculate velocity when the mouse is released
     launchVelocity = calculateLaunchVelocity(startX, startY, endX, endY);
     console.log(launchVelocity);
-    //Remove event listeners once the mouse button is released
-    canvas.removeEventListener('mousedown', getMouseDownCoords);
-    canvas.removeEventListener('mouseup', getMouseUpCoords);
-    mouseDownFlag = false;
-    // endX, endY = undefined;
 }
 
+function trackMouseMove(e) {
+    if (!mouseDownFlag) return;
+
+    const rect = canvas.getBoundingClientRect();
+    endX = e.clientX - rect.left;
+    endY = e.clientY - rect.top;
+}
 
 canvas.addEventListener('mousemove', (e) => {
     // console.log('mouse is moving over canvas');
@@ -41,15 +60,10 @@ canvas.addEventListener('mousemove', (e) => {
 
     //Check if mouse cursor is over the ball.
     if (newBall.isMouseOver(mouseX, mouseY)) {
-        canvas.addEventListener('mousedown', getMouseDownCoords);
-        if (mouseDownFlag) {
-            canvas.addEventListener('mouseup', getMouseUpCoords);
-        }
-            
+        canvas.addEventListener('mousedown', handleMouseDown);    
     } else {
         //Remove event listeners if mouse moves off ball
-        canvas.removeEventListener('mousedown', getMouseDownCoords);
-        // canvas.removeEventListener('mouseup', getMouseUpCoords);
+        canvas.removeEventListener('mousedown', handleMouseDown);
     }    
 });
 

@@ -4,16 +4,11 @@ import { launchVelocity, getLaunchArrowCoords, endX, endY, startX } from "./inte
 import { newBall, newArrow } from ".";
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
-// let lastTime = performance.now();
 
 
 export function gameLoop() {
-    const currentTime = performance.now();
-    // let dt = (currentTime - lastTime) / 1000;
-    // lastTime = currentTime;
-
     clearCanvas();
-    if (endX !== undefined) {
+    if (startX !== undefined) {
         let arrowTip = getLaunchArrowCoords();
         newArrow.update(arrowTip.x, arrowTip.y, true);
     }
