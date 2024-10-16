@@ -7,8 +7,11 @@ let fps = 0;
 
 export function fpsCounter(time) {
     //Calculate delta time between frames
-    const deltaTime = time - lastTime;
-    lastTime = time;
+    const currentTime = performance.now();
+    const deltaTime = currentTime - lastTime;
+    lastTime = currentTime;
+    // const deltaTime = time - lastTime;
+    // lastTime = time;
 
     frameCount++;
 
@@ -23,5 +26,5 @@ export function fpsCounter(time) {
     ctx.font = '12px Arial';
     ctx.fillStyle = 'black';
     ctx.fillText(`FPS: ${fps}`, 10, 15);
-    requestAnimationFrame(fpsCounter);
+    // requestAnimationFrame(fpsCounter);
 }

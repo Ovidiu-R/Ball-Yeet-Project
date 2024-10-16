@@ -2,12 +2,14 @@ import { Ball, launchArrow } from "./gameObjects";
 import { basicHandler } from "./collisionHandler";
 import { launchVelocity, getLaunchArrowCoords, endX, endY, startX } from "./interactivityHandler";
 import { newBall, newArrow } from ".";
+import  { fpsCounter } from "./fpsCounter.js";
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
 
 export function gameLoop() {
     clearCanvas();
+    fpsCounter();
     if (startX !== undefined) {
         let arrowTip = getLaunchArrowCoords();
         newArrow.update(arrowTip.x, arrowTip.y, true);
