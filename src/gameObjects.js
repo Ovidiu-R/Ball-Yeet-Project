@@ -2,6 +2,8 @@ import { endY, getLaunchArrowCoords } from './interactivityHandler';
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
+// B A L L
+
 export class Ball {
     constructor(x, y, vx, vy, radius = 30, color = 'blue') {
         this.position = {x: x, y: y};
@@ -71,6 +73,7 @@ export class Ball {
     }
 }
 
+// A R R O W
 
 export class launchArrow {
     constructor(originX, originY, endX, endY, color) {
@@ -135,5 +138,30 @@ export class launchArrow {
             ctx.stroke();
         }
         
+    }
+}
+
+// W A L L
+
+export class Wall {
+    constructor (startX, startY, height, width) {
+        this.bottomLeft = {x: startX, y: startY};
+        this.topLeft = {x: startX, y: startY - height};
+        this.topRight = {x: startX + width, y: startY - height};
+        this.bottomRight = {x: startX + width, y: startY};
+    }
+
+    draw() {
+        ctx.beginPath();
+        ctx.moveTo(this.bottomLeft.x, this.bottomLeft.y);
+        ctx.lineTo(this.topLeft.x, this.topLeft.y);
+        ctx.lineTo(this.topRight.x, this.topRight.y);
+        ctx.lineTo(this.bottomRight.x, this.bottomRight.y);
+        ctx.closePath();
+        ctx.strokeStyle = 'black';
+        ctx.fillStyle = 'brown';
+        ctx.lineWidth = 3;
+        ctx.fill();
+        ctx.stroke();
     }
 }
