@@ -19,10 +19,9 @@ export function gameLoop() {
         newBall.launch(launchVelocity.x, launchVelocity.y);
         launchVelocity = undefined;
     }
+    basicHandler();
     newBall.update();
-    if (basicHandler()) {
-        newBall.update();
-    }
+    
     newBall.draw();
     newArrow.draw();
 
