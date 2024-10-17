@@ -1,4 +1,5 @@
 import { newBall } from ".";
+import { Wall } from "./gameObjects";
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
@@ -18,3 +19,9 @@ if (newBall.position.y + newBall.velocity.y > canvas.height - newBall.radius ||
  }
  return collisionDetected;
 }
+
+function checkCanvasEdges() {
+
+}
+
+function checkWalls()

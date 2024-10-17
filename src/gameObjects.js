@@ -24,7 +24,10 @@ export class Ball {
         ctx.arc(this.position.x, this.position.y, this.radius, 0, Math.PI *2, true);
         ctx.closePath();
         ctx.fillStyle = this.color;
+        ctx.strokeStyle = 'black';
+        ctx.lineWidth = 2;
         ctx.fill();
+        ctx.stroke();
     }
     launch(launchVelocityX = undefined, launchVelocityY = undefined) {
         if (launchVelocityX !== undefined) {
@@ -144,11 +147,15 @@ export class launchArrow {
 // W A L L
 
 export class Wall {
+    static allInstances = []; //Hold all wall instances
+
     constructor (startX, startY, height, width) {
         this.bottomLeft = {x: startX, y: startY};
         this.topLeft = {x: startX, y: startY - height};
         this.topRight = {x: startX + width, y: startY - height};
         this.bottomRight = {x: startX + width, y: startY};
+
+        Wall.allInstances.push(this);
     }
 
     draw() {

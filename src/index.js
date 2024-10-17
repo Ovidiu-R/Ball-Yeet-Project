@@ -5,7 +5,7 @@ import { fpsCounter } from './fpsCounter.js';
 
 export let newBall;
 export let newArrow;
-export let newWall;
+export let newWall, newWall2;
 
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('gameCanvas');
@@ -22,6 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
     newBall.draw();
     newArrow = new launchArrow (180, 450, 0, 0, 'black');
     newWall = new Wall (700, 600, 450, 50);
-    newWall.draw();
+    newWall2 = new Wall (900, 600, 350, 50);
     gameLoop();
 });

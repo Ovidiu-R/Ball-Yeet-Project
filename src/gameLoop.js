@@ -1,4 +1,4 @@
-import { Ball, launchArrow } from "./gameObjects";
+import { Ball, launchArrow , Wall} from "./gameObjects";
 import { basicHandler } from "./collisionHandler";
 import { launchVelocity, getLaunchArrowCoords, endX, endY, startX } from "./interactivityHandler";
 import { newBall, newArrow, newWall } from ".";
@@ -25,7 +25,9 @@ export function gameLoop() {
     }
     newBall.draw();
     newArrow.draw();
-    newWall.draw();
+
+    Wall.allInstances.forEach(obj => obj.draw());
+
     //Check game state(collision with goal should result in points or a level change, in which case the gameLoop should be ended instantly to save on resources and new level should be loaded
     //Draw ball
     //Draw walls
