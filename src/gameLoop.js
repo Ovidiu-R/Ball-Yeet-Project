@@ -1,7 +1,7 @@
 import { Ball, launchArrow , Wall} from "./gameObjects";
 import { basicHandler } from "./collisionHandler";
 import { launchVelocity, getLaunchArrowCoords, endX, endY, startX } from "./interactivityHandler";
-import { newBall, newArrow, newWall } from ".";
+import { newBall, newArrow, goal } from ".";
 import  { fpsCounter } from "./fpsCounter.js";
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
@@ -19,6 +19,7 @@ export function gameLoop() {
         newBall.launch(launchVelocity.x, launchVelocity.y);
         launchVelocity = undefined;
     }
+    goal.draw();
     basicHandler();
     newBall.update();
     
