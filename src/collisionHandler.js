@@ -21,6 +21,12 @@ function checkCanvasEdges() {
 
 function checkWalls() {
     Wall.allInstances.forEach (obj => {
+
+        Object.keys(obj).forEach((key) => {
+            const corner = obj[key];
+            const distance = Math.sqrt((corner.x - newBall.position.x) ** 2 + (corner.y - newBall.position.y) ** 2);
+        });
+
         if (newBall.position.x + newBall.velocity.x >= obj.bottomLeft.x - newBall.radius && 
             newBall.position.x + newBall.velocity.x <= obj.bottomRight.x - newBall.radius &&
             newBall.position.y + newBall.velocity.y <= obj.topLeft.y) {

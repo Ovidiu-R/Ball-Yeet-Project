@@ -28,10 +28,6 @@ export function gameLoop() {
 
     Wall.allInstances.forEach(obj => obj.draw());
 
-    //Check game state(collision with goal should result in points or a level change, in which case the gameLoop should be ended instantly to save on resources and new level should be loaded
-    //Draw ball
-    //Draw walls
-    //RequestAnimationFrame
     requestAnimationFrame(gameLoop);
 }
 
