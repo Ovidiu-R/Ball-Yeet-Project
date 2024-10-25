@@ -71,7 +71,7 @@ export class Ball {
     }
 
     isMouseOver(mouseX, mouseY) {
-        
+        const distance = Math.sqrt((mouseX - this.position.x) ** 2 + (mouseY - this.position.y) ** 2);
         return distance <= this.radius;
     }
 }
