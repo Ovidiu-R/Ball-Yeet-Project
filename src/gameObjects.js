@@ -180,8 +180,8 @@ export class Goal {
         this.position = { x: centreX, y: centreY };
         this.girth = girth;
         this.edges = {
-            leftEdge: { x: centreX - 30, y: centreY},
-            rightEdge: { x: centreX +30, y: centreY}
+            leftEdge: { x: centreX - 60, y: centreY},
+            rightEdge: { x: centreX +60, y: centreY}
         }
     }
 

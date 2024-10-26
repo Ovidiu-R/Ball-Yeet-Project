@@ -18,7 +18,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // let mouseY;
 
     //Create and export single instance of Ball class that will be used throughout the codebase
+    // newBall = new Ball(180, 450, 0, 0, 18, 'red');
     newBall = new Ball(180, 450, 0, 0, 18, 'red');
+
     newBall.draw();
     newArrow = new launchArrow (180, 450, 0, 0, 'black');
     newWall = new Wall (700, 600, 450, 50);

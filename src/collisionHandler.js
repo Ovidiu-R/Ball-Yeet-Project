@@ -59,22 +59,32 @@ function checkGoal() {
     Object.keys(goal.edges).forEach((key) => {
         const rim = goal.edges[key];
         const distance = Math.sqrt((rim.x - newBall.position.x) ** 2 + (rim.y - newBall.position.y) ** 2);
-        if (distance <= newBall.radius + goal.girth / 2) {
+        if (distance <= newBall.radius + (goal.girth / 2)) {
             //Calculate vector between ball center and edge centre
-            const vector = {x: newBall.position.x - key.x, y: newBall.position.y - key.y};
+            const vector = {x: newBall.position.x - rim.x, y: newBall.position.y - rim.y};
             //Normalise to get unit vector
             const magnitude = Math.sqrt(vector.x ** 2 + vector.y ** 2);
             const normal = { x: vector.x / magnitude, y: vector.y / magnitude};
             //Find contact point by extending normal vector to radius of edge circle
             const contactPoint = {
-                x: key.x + normal.x * key.girth / 2,
-                y: key.y + normal.y * key.girth /2
+                x: rim.x + normal.x * (goal.girth / 2),
+                y: rim.y + normal.y * (goal.girth /2)
             };
-            const dotProduct = newBall.velocity.x * normal.x + newBall.velocity.y * normal.y;
-            // Vnew = v - 2(v*n)n
-            const subtrahend = {x: normal.x * dotProduct *2, y: normal.y * dotProduct * 2};
+            //Use contactPoint coordinates to calculate new velocity vector
+            const newVector = {x: newBall.position.x - contactPoint.x, y: newBall.position.y - contactPoint.y};
+            //Normalise to get unit vector
+            const newMagnitude = Math.sqrt(newVector.x ** 2 + newVector.y ** 2);
+            const newNormal = { x: newVector.x / newMagnitude, y: newVector.y / newMagnitude};
+            const dotProduct = newBall.velocity.x * newNormal.x + newBall.velocity.y * newNormal.y;
+            const subtrahend = {x: newNormal.x * dotProduct *2, y: newNormal.y * dotProduct * 2};
             const newVelocity = { x: newBall.velocity.x - subtrahend.x, y: newBall.velocity.y - subtrahend.y };
             newBall.velocity = newVelocity;
+            // const dotProduct = newBall.velocity.x * normal.x + newBall.velocity.y * normal.y;
+            // // Vnew = v - 2(v*n)n
+            // const subtrahend = {x: normal.x * dotProduct *2, y: normal.y * dotProduct * 2};
+            // const newVelocity = { x: newBall.velocity.x - subtrahend.x, y: newBall.velocity.y - subtrahend.y };
+            // newBall.velocity = newVelocity;
+            // console.log(newBall.velocity);
             console.log('EDGE!');
         }
     });
