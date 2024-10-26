@@ -23,6 +23,6 @@ document.addEventListener('DOMContentLoaded', () => {
     newArrow = new launchArrow (180, 450, 0, 0, 'black');
     newWall = new Wall (700, 600, 450, 50);
     newWall2 = new Wall (900, 600, 350, 50);
-    goal = new Goal (1200, 500);
+    goal = new Goal (1200, 400, 10);
     gameLoop();
 });

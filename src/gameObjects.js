@@ -176,29 +176,35 @@ export class Wall {
 // G O A L
 
 export class Goal {
-    constructor (centreX, centreY) {
+    constructor (centreX, centreY, girth) {
         this.position = { x: centreX, y: centreY };
+        this.girth = girth;
+        this.edges = {
+            leftEdge: { x: centreX - 30, y: centreY},
+            rightEdge: { x: centreX +30, y: centreY}
+        }
     }
 
     draw() {
+        ctx.beginPath();
+        ctx.moveTo (this.position.x, this.position.y - 25);
+        ctx.lineWidth = 7;
+        ctx.strokeStyle = 'black';
+        ctx.lineTo (this.position.x, this.position.y + 155);
+        ctx.lineTo (this.position.x - 30, this.position.y + 185);
+        ctx.moveTo (this.position.x, this.position.y + 155);
+        ctx.lineTo (this.position.x + 30, this.position.y + 185);
+        ctx.stroke();
+        ctx.closePath();
         ctx.beginPath();
         ctx.ellipse ( this.position.x, this.position.y, 60, 30, 0, 0, 2 * Math.PI);
         // ctx.fillStyle = 'transparent';
         // ctx.fill();
         ctx.strokeStyle = 'green'; 
-        ctx.lineWidth = 10;
+        ctx.lineWidth = this.girth;
         ctx.stroke();
         ctx.closePath();
-        ctx.beginPath();
-        ctx.moveTo (this.position.x, this.position.y - 25);
-        ctx.lineWidth = 7;
-        ctx.strokeStyle = 'black';
-        ctx.lineTo (this.position.x, this.position.y + 55);
-        ctx.lineTo (this.position.x - 30, this.position.y + 85);
-        ctx.moveTo (this.position.x, this.position.y + 55);
-        ctx.lineTo (this.position.x + 30, this.position.y + 85);
-        ctx.stroke();
-        ctx.closePath();
+       
 
         
     }
