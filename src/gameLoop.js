@@ -5,6 +5,7 @@ import { newBall, newArrow, goal, goalPost } from ".";
 import  { fpsCounter } from "./fpsCounter.js";
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
+const fpsCap = 60;
 
 
 export function gameLoop() {
@@ -35,7 +36,11 @@ export function gameLoop() {
 
     Wall.allInstances.forEach(obj => obj.draw());
 
-    requestAnimationFrame(gameLoop);
+    //Limit framerate by wrapping RAF in a setTimeout block. Simple method that would introduce desync as project complexity increases
+    //Decoupling logic from RAF loop and running it in a separate TimeInterval thread and only updating graphics in RAF would be preferable in complex scenarios
+    setTimeout(() => {
+        requestAnimationFrame(gameLoop);
+    }, 1000 / fpsCap)
 }
 
 function clearCanvas() {
