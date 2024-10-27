@@ -177,19 +177,21 @@ export class Wall {
 // G O A L
 
 export class Goal {
-    constructor (centreX, centreY, girth) {
+    constructor (centreX, centreY, verRadius, horRadius, girth) {
         this.position = { x: centreX, y: centreY };
         this.girth = girth;
+        this.verRadius = verRadius;
+        this.horRadius = horRadius;
         this.edges = {
-            leftEdge: { x: centreX - 60, y: centreY},
-            rightEdge: { x: centreX +60, y: centreY}
+            leftEdge: { x: centreX - this.horRadius, y: centreY},
+            rightEdge: { x: centreX + this.horRadius, y: centreY}
         }
     }
 
     draw() {
 
         ctx.beginPath();
-        ctx.ellipse ( this.position.x, this.position.y, 60, 30, 0, 0, 2 * Math.PI);
+        ctx.ellipse ( this.position.x, this.position.y, this.horRadius, this.verRadius, 0, 0, 2 * Math.PI);
         ctx.strokeStyle = 'green'; 
         ctx.lineWidth = this.girth;
         ctx.stroke();

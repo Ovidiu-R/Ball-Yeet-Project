@@ -84,5 +84,15 @@ function checkGoal() {
     });
 
     //Check if ball enters hoop from above and if so award point
-    
+    if (newBall.position.x >= goal.edges.leftEdge.x &&
+        newBall.position.x <= goal.edges.rightEdge.x &&
+        newBall.position.y >= goal.position.y - goal.girth / 2 &&
+        newBall.position.y <= goal.position.y + goal.girth / 2 &&
+        newBall.velocity.y > 0 &&
+        newBall.hasScored !== true
+    ) {
+        newBall.hasScored = true;
+        console.log('SCORE!!!!');
+        //Add visual score keeping
+    }
 }
