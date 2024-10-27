@@ -50,7 +50,7 @@ export class Ball {
                 // } else {this.velocity.x = 0;}
                 
             } else {
-                this.velocity.x += this.windSpeed; //Add wind speed while ball is airborne
+                // this.velocity.x += this.windSpeed; //Add wind speed while ball is airborne
             }             
         }
 
@@ -80,13 +80,15 @@ export class Ball {
 // A R R O W
 
 export class launchArrow {
-    constructor(originX, originY, endX, endY, color) {
+    constructor(originX, originY, endX, endY, color = 'black') {
         this.origin = {x: originX, y: originY};
         this.end = {x: endX, y: endY};
+        this.tip = {x: undefined, y: undefined};
         this.visibility = false;
         this.color = color;
     }
 
+    
     update(endX, endY, visibility) {
         this.end.x = endX;
         this.end.y = endY;
@@ -102,7 +104,9 @@ export class launchArrow {
     getArrowHeadEdges() {
         const edgeAngleOffset = 200 * Math.PI / 180;
         let edgeLength;
-        const arrowTipCoords = getLaunchArrowCoords();
+        this.end = getLaunchArrowCoords();
+        this.tip = getLaunchArrowCoords();
+        // const arrowTipCoords = getLaunchArrowCoords();
 
         if (this.getArrowLength() < 100) {
             edgeLength = this.getArrowLength() / 2;
@@ -120,28 +124,60 @@ export class launchArrow {
 
         //Calculate coordinates for segments making up the left and right edges of the arrowhead
         const leftEdgeCoords = {
-            x: arrowTipCoords.x + edgeLength * Math.cos(leftEdgeAngle),
-            y: arrowTipCoords.y + edgeLength * Math.sin(leftEdgeAngle),
+            x: this.end.x + edgeLength * Math.cos(leftEdgeAngle),
+            y: this.end.y + edgeLength * Math.sin(leftEdgeAngle),
         }
         const rightEdgeCoords = {
-            x: arrowTipCoords.x + edgeLength * Math.cos(rightEdgeAngle),
-            y: arrowTipCoords.y + edgeLength * Math.sin(rightEdgeAngle),
+            x: this.end.x + edgeLength * Math.cos(rightEdgeAngle),
+            y: this.end.y + edgeLength * Math.sin(rightEdgeAngle),
         }
         return {leftEdgeCoords, rightEdgeCoords};
     }
 
     draw() {
         if (this.visibility === true) {
-            const arrow = this.getArrowHeadEdges();
+            //Draw arrow shaft
             ctx.beginPath();
+            ctx.strokeStyle = this.color; 
+            ctx.lineWidth = this.getArrowLength() / 20;
+
+            //Adjust shaft end coordinates based on line width
+            const arrow = this.getArrowHeadEdges();             // Should move this logic elsewhere
+            this.adjustEndCoordinates();
+            
             ctx.moveTo(this.origin.x, this.origin.y);
             ctx.lineTo(this.end.x, this.end.y);
-            ctx.lineTo(arrow.leftEdgeCoords.x, arrow.leftEdgeCoords.y);
-            ctx.moveTo(this.end.x, this.end.y);
-            ctx.lineTo(arrow.rightEdgeCoords.x, arrow.rightEdgeCoords.y);
             ctx.stroke();
+
+
+            //Draw triangular arrow head
+            ctx.beginPath();
+            ctx.moveTo(this.tip.x, this.tip.y);
+            ctx.lineTo(arrow.leftEdgeCoords.x, arrow.leftEdgeCoords.y);
+            ctx.lineTo(arrow.rightEdgeCoords.x, arrow.rightEdgeCoords.y);
+            ctx.closePath(); 
+            ctx.fillStyle = this.color; 
+            ctx.fill(); 
         }
         
+    }
+
+    adjustEndCoordinates() {
+        const direction = {
+            x: this.end.x - this.origin.x,
+            y: this.end.y - this.origin.y,
+        };
+        const directionMagnitude = Math.sqrt(direction.x ** 2 + direction.y ** 2);
+        const unitDirection = {
+            x: direction.x / directionMagnitude,
+            y: direction.y / directionMagnitude,
+        };
+        const offsetDistance = ctx.lineWidth * 1.5;
+        const adjustedEnd = {
+            x: this.end.x - unitDirection.x * offsetDistance,
+            y: this.end.y - unitDirection.y * offsetDistance,
+        };
+        this.update(adjustedEnd.x, adjustedEnd.y, false);
     }
 }
 

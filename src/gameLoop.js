@@ -20,11 +20,17 @@ export function gameLoop() {
         launchVelocity = undefined;
     }
     goalPost.draw();
-    goal.draw();
+
     basicHandler();
     newBall.update();
+    if (newBall.position.y <= goal.position.y) {
+        goal.draw();
+        newBall.draw();
+    } else {
+        newBall.draw();
+        goal.draw();
+    }
     
-    newBall.draw();
     newArrow.draw();
 
     Wall.allInstances.forEach(obj => obj.draw());
