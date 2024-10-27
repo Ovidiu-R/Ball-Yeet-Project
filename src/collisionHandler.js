@@ -79,13 +79,10 @@ function checkGoal() {
             const subtrahend = {x: newNormal.x * dotProduct *2, y: newNormal.y * dotProduct * 2};
             const newVelocity = { x: newBall.velocity.x - subtrahend.x, y: newBall.velocity.y - subtrahend.y };
             newBall.velocity = newVelocity;
-            // const dotProduct = newBall.velocity.x * normal.x + newBall.velocity.y * normal.y;
-            // // Vnew = v - 2(v*n)n
-            // const subtrahend = {x: normal.x * dotProduct *2, y: normal.y * dotProduct * 2};
-            // const newVelocity = { x: newBall.velocity.x - subtrahend.x, y: newBall.velocity.y - subtrahend.y };
-            // newBall.velocity = newVelocity;
-            // console.log(newBall.velocity);
             console.log('EDGE!');
         }
     });
+
+    //Check if ball enters hoop from above and if so award point
+    
 }

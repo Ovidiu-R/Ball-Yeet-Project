@@ -11,6 +11,7 @@ export class Ball {
         this.windSpeed = undefined;
         this.isLaunched = false;
         this.isGrounded = false;
+        this.hasScored = false;
         this.radius = radius;
         this.color = color;
         this.collisionData = {
@@ -186,26 +187,33 @@ export class Goal {
     }
 
     draw() {
+
         ctx.beginPath();
-        ctx.moveTo (this.position.x, this.position.y - 25);
-        ctx.lineWidth = 7;
-        ctx.strokeStyle = 'black';
+        ctx.ellipse ( this.position.x, this.position.y, 60, 30, 0, 0, 2 * Math.PI);
+        ctx.strokeStyle = 'green'; 
+        ctx.lineWidth = this.girth;
+        ctx.stroke();
+        ctx.closePath(); 
+    }
+}
+
+export class GoalPost {
+    constructor (centreX, centreY, ellipseHeight, lineWidth = 7, color = 'black') {
+        this.position = { x: centreX, y: centreY - ellipseHeight +5};
+        this.lineWidth = lineWidth;
+        this.color = color;
+    }
+
+    draw() {
+        ctx.beginPath();
+        ctx.moveTo (this.position.x, this.position.y);
+        ctx.lineWidth = this.lineWidth;
+        ctx.strokeStyle = this.color;
         ctx.lineTo (this.position.x, this.position.y + 155);
         ctx.lineTo (this.position.x - 30, this.position.y + 185);
         ctx.moveTo (this.position.x, this.position.y + 155);
         ctx.lineTo (this.position.x + 30, this.position.y + 185);
         ctx.stroke();
         ctx.closePath();
-        ctx.beginPath();
-        ctx.ellipse ( this.position.x, this.position.y, 60, 30, 0, 0, 2 * Math.PI);
-        // ctx.fillStyle = 'transparent';
-        // ctx.fill();
-        ctx.strokeStyle = 'green'; 
-        ctx.lineWidth = this.girth;
-        ctx.stroke();
-        ctx.closePath();
-       
-
-        
     }
 }
