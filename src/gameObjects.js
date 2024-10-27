@@ -56,11 +56,11 @@ export class Ball {
 
         //Flip velocity on and decrease velocity on each collision
         if (this.collisionData.horizontal === true) {
-            this.velocity.x = -this.velocity.x * 0.6;
+            this.velocity.x = -this.velocity.x * 0.8;
             this.collisionData.horizontal = false;
         } else {this.position.x += this.velocity.x;};
         if (this.collisionData.vertical === true) {
-            this.velocity.y = -this.velocity.y * 0.6;
+            this.velocity.y = -this.velocity.y * 0.8;
             this.collisionData.vertical = false;
         } else {this.position.y += this.velocity.y;}
 
@@ -253,5 +253,21 @@ export class GoalPost {
         ctx.lineTo (this.position.x + 30, this.position.y + 185);
         ctx.stroke();
         ctx.closePath();
+    }
+}
+
+export class WinMessage {
+    constructor (visibility = false) {
+        this.visibility = visibility;
+    }
+
+    draw() {
+        ctx.font = '20px Arial';
+        ctx.fillStyle = 'blue';
+        ctx.textAlign = 'center';        // Align text to the right of the given x-coordinate
+        ctx.textBaseline = 'middle';    // Align text to the bottom of the given y-coordinate
+    
+        // Place text in the bottom-right corner
+        ctx.fillText('BOOM SHAKALAKA!', canvas.width / 2, 100);
     }
 }

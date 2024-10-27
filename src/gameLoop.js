@@ -1,7 +1,7 @@
 import { Ball, launchArrow , Wall} from "./gameObjects";
 import { basicHandler } from "./collisionHandler";
 import { launchVelocity, getLaunchArrowCoords, endX, endY, startX } from "./interactivityHandler";
-import { newBall, newArrow, goal, goalPost } from ".";
+import { newBall, newArrow, goal, goalPost, winMessage } from ".";
 import  { fpsCounter } from "./fpsCounter.js";
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
@@ -31,7 +31,9 @@ export function gameLoop() {
         newBall.draw();
         goal.draw();
     }
-    
+    if (newBall.hasScored) {
+        winMessage.draw();
+    }
     newArrow.draw();
 
     Wall.allInstances.forEach(obj => obj.draw());

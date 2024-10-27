@@ -1,11 +1,11 @@
 import './style.css';
-import { Ball, Wall, launchArrow, Goal, GoalPost } from './gameObjects.js';
+import { Ball, Wall, launchArrow, Goal, GoalPost, WinMessage } from './gameObjects.js';
 import { gameLoop } from './gameLoop.js';
 import { fpsCounter } from './fpsCounter.js';
 
 export let newBall;
 export let newArrow;
-export let newWall, newWall2, goal, goalPost;
+export let newWall, newWall2, goal, goalPost, winMessage;
 
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('gameCanvas');
@@ -25,5 +25,6 @@ document.addEventListener('DOMContentLoaded', () => {
     newWall = new Wall (700, 600, 450, 50);
     newWall2 = new Wall (900, 600, 350, 50);
     goal = new Goal (1200, 400, 30, 60, 10);
+    winMessage = new WinMessage (false);
     gameLoop();
 });

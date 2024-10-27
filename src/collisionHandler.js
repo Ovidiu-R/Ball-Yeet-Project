@@ -1,5 +1,6 @@
 import { newBall, goal } from ".";
 import { Wall } from "./gameObjects";
+import { scorePoint } from "./gameState";
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
@@ -35,7 +36,7 @@ function checkWalls() {
                 // Vnew = v - 2(v*n)n
                 const subtrahend = {x: normalized.x * dotProduct *2, y: normalized.y * dotProduct * 2};
                 const newVelocity = { x: newBall.velocity.x - subtrahend.x, y: newBall.velocity.y - subtrahend.y };
-                newBall.velocity = newVelocity;
+                newBall.velocity = { x: newVelocity.x * 0.8, y: newVelocity.y * 0.8 }; //Factor in elasticity coefficient
             }
         });
 
@@ -78,7 +79,7 @@ function checkGoal() {
             const dotProduct = newBall.velocity.x * newNormal.x + newBall.velocity.y * newNormal.y;
             const subtrahend = {x: newNormal.x * dotProduct *2, y: newNormal.y * dotProduct * 2};
             const newVelocity = { x: newBall.velocity.x - subtrahend.x, y: newBall.velocity.y - subtrahend.y };
-            newBall.velocity = newVelocity;
+            newBall.velocity = { x: newVelocity.x * 0.8, y: newVelocity.y * 0.8 };
             console.log('EDGE!');
         }
     });
@@ -93,6 +94,6 @@ function checkGoal() {
     ) {
         newBall.hasScored = true;
         console.log('SCORE!!!!');
-        //Add visual score keeping
+        scorePoint();
     }
 }
