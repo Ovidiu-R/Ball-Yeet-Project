@@ -3,6 +3,7 @@ import { Wall } from "./gameObjects";
 import { scorePoint } from "./gameState";
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
+const offsetDistance = 2;
 
 export function basicHandler() {
     checkCanvasEdges();
@@ -32,10 +33,13 @@ function checkWalls() {
                 const normalVector = {x: corner.x - newBall.position.x, y: corner.y - newBall.position.y};
                 const magnitude = Math.sqrt(normalVector.x ** 2 + normalVector.y ** 2);
                 const normalized = { x: normalVector.x / magnitude, y: normalVector.y / magnitude};
+                const positionOffset = { x: normalized.x * offsetDistance, y: normalized.y * offsetDistance };
                 const dotProduct = newBall.velocity.x * normalized.x + newBall.velocity.y * normalized.y;
                 // Vnew = v - 2(v*n)n
                 const subtrahend = {x: normalized.x * dotProduct *2, y: normalized.y * dotProduct * 2};
                 const newVelocity = { x: newBall.velocity.x - subtrahend.x, y: newBall.velocity.y - subtrahend.y };
+                //Move ball back along bounce vector to ensure it doesn't get stuck in geometry and then modify ball velocity
+                newBall.position = { x: newBall.position.x -= positionOffset.x, y: newBall.position.y -= positionOffset.y };
                 newBall.velocity = { x: newVelocity.x * 0.8, y: newVelocity.y * 0.8 }; //Factor in elasticity coefficient
             }
         });
@@ -72,13 +76,17 @@ function checkGoal() {
                 y: rim.y + normal.y * (goal.girth /2)
             };
             //Use contactPoint coordinates to calculate new velocity vector
-            const newVector = {x: newBall.position.x - contactPoint.x, y: newBall.position.y - contactPoint.y};
+            const newVector = {x: contactPoint.x - newBall.position.x, y: contactPoint.y - newBall.position.y };
             //Normalise to get unit vector
             const newMagnitude = Math.sqrt(newVector.x ** 2 + newVector.y ** 2);
             const newNormal = { x: newVector.x / newMagnitude, y: newVector.y / newMagnitude};
+            const positionOffset = { x: newNormal.x * offsetDistance, y: newNormal.y * offsetDistance };
             const dotProduct = newBall.velocity.x * newNormal.x + newBall.velocity.y * newNormal.y;
             const subtrahend = {x: newNormal.x * dotProduct *2, y: newNormal.y * dotProduct * 2};
             const newVelocity = { x: newBall.velocity.x - subtrahend.x, y: newBall.velocity.y - subtrahend.y };
+            //Move ball back along bounce vector to ensure it doesn't get stuck in geometry and then modify ball velocity
+            // newBall.position = { x: newBall.position.x += positionOffset.x, y: newBall.position.y += positionOffset.y };
+            newBall.position = { x: newBall.position.x -= positionOffset.x, y: newBall.position.y -= positionOffset.y };
             newBall.velocity = { x: newVelocity.x * 0.8, y: newVelocity.y * 0.8 };
             console.log('EDGE!');
         }
