@@ -230,12 +230,12 @@ export class Goal {
 
     draw() {
 
-        sCtx.beginPath();
-        sCtx.ellipse ( this.position.x, this.position.y, this.horRadius, this.verRadius, 0, 0, 2 * Math.PI);
-        sCtx.strokeStyle = 'green'; 
-        sCtx.lineWidth = this.girth;
-        sCtx.stroke();
-        sCtx.closePath(); 
+        dCtx.beginPath();
+        dCtx.ellipse ( this.position.x, this.position.y, this.horRadius, this.verRadius, 0, 0, 2 * Math.PI);
+        dCtx.strokeStyle = 'green'; 
+        dCtx.lineWidth = this.girth;
+        dCtx.stroke();
+        dCtx.closePath(); 
     }
 }
 

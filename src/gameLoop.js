@@ -56,7 +56,11 @@ function drawStaticElements() {
 }
 
 function clearCanvas() {
-    dCtx.clearRect(0, 0, dynamicCanvas.width, dynamicCanvas.height);
-    // dCtx.fillStyle = "rgb(0 255 255 / 20%";
-    // dCtx.fillRect(0, 0, dynamicCanvas.width, dynamicCanvas.height);
+    //With destination-out, any non-transparent shape will erase existing content where it’s drawn.
+    dCtx.globalCompositeOperation = 'destination-out';
+    dCtx.fillStyle = "rgba(0, 0, 0, 0.3)"; // Light fade, can be darkened or adjusted
+    dCtx.fillRect(0, 0, dynamicCanvas.width, dynamicCanvas.height);
+    //Switch back to default source-over to draw the current ball position normally on top
+    dCtx.globalCompositeOperation = 'source-over'; // Restore default
+
 }
