@@ -1,8 +1,7 @@
 import { newBall, goal } from ".";
 import { Wall } from "./gameObjects";
 import { scorePoint } from "./gameState";
-const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d');
+const canvas = document.getElementById('staticCanvas'); //Too lazy to import
 const offsetDistance = 2;
 
 export function basicHandler() {

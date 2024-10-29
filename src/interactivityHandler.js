@@ -1,7 +1,7 @@
-import { Ball } from "./gameObjects";
+// import { Ball } from "./gameObjects";
 import { newBall, newArrow } from ".";
 
-const canvas = document.getElementById('gameCanvas');
+let dynamicCanvas = document.getElementById('dynamicCanvas');
 let startY;
 let powerScale = 0.20;
 export let launchVelocity = undefined; //Will have to reset this once it has been altered
@@ -12,12 +12,12 @@ function handleMouseDown(e) {
     mouseDownFlag = true;
     getMouseDownCoords(e);
 
-    canvas.addEventListener('mousemove', trackMouseMove);
-    canvas.addEventListener('mouseup', handleMouseUp);
+    dynamicCanvas.addEventListener('mousemove', trackMouseMove);
+    dynamicCanvas.addEventListener('mouseup', handleMouseUp);
 }
 
 function getMouseDownCoords (e) {
-    const rect = canvas.getBoundingClientRect();
+    const rect = dynamicCanvas.getBoundingClientRect();
     startX = e.clientX - rect.left;
     startY = e.clientY - rect.top;
     console.log('start', startX, startY);
@@ -27,14 +27,14 @@ function getMouseDownCoords (e) {
 function handleMouseUp(e) {
     getMouseUpCoords(e);
 
-    canvas.removeEventListener('mousemove', trackMouseMove);
-    canvas.removeEventListener('mouseup', handleMouseUp);
+    dynamicCanvas.removeEventListener('mousemove', trackMouseMove);
+    dynamicCanvas.removeEventListener('mouseup', handleMouseUp);
     startX, startY = undefined;
     mouseDownFlag = false;
 }
 
 function getMouseUpCoords (e) {
-    const rect = canvas.getBoundingClientRect();
+    const rect = dynamicCanvas.getBoundingClientRect();
     endX = e.clientX - rect.left;
     endY = e.clientY - rect.top;
     console.log('end', endX, endY);
@@ -47,23 +47,23 @@ function getMouseUpCoords (e) {
 function trackMouseMove(e) {
     if (!mouseDownFlag) return;
 
-    const rect = canvas.getBoundingClientRect();
+    const rect = dynamicCanvas.getBoundingClientRect();
     endX = e.clientX - rect.left;
     endY = e.clientY - rect.top;
 }
 
-canvas.addEventListener('mousemove', (e) => {
+dynamicCanvas.addEventListener('mousemove', (e) => {
     // console.log('mouse is moving over canvas');
-    const rect = canvas.getBoundingClientRect();
+    const rect = dynamicCanvas.getBoundingClientRect();
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
 
     //Check if mouse cursor is over the ball.
     if (newBall.isMouseOver(mouseX, mouseY)) {
-        canvas.addEventListener('mousedown', handleMouseDown);    
+        dynamicCanvas.addEventListener('mousedown', handleMouseDown);    
     } else {
         //Remove event listeners if mouse moves off ball
-        canvas.removeEventListener('mousedown', handleMouseDown);
+        dynamicCanvas.removeEventListener('mousedown', handleMouseDown);
     }    
 });
 

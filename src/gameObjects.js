@@ -1,6 +1,10 @@
 import { endY, getLaunchArrowCoords } from './interactivityHandler';
-const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d');
+// import { staticCanvas, dynamicCanvas, sCtx, dCtx } from ".";
+let staticCanvas = document.getElementById('staticCanvas');
+let sCtx = staticCanvas.getContext('2d');
+let dynamicCanvas = document.getElementById('dynamicCanvas');
+let dCtx = dynamicCanvas.getContext('2d');
+
 
 // B A L L
 
@@ -21,14 +25,14 @@ export class Ball {
     }
 
     draw() {
-        ctx.beginPath();
-        ctx.arc(this.position.x, this.position.y, this.radius, 0, Math.PI *2, true);
-        ctx.closePath();
-        ctx.fillStyle = this.color;
-        ctx.strokeStyle = 'black';
-        ctx.lineWidth = 2;
-        ctx.fill();
-        ctx.stroke();
+        dCtx.beginPath();
+        dCtx.arc(this.position.x, this.position.y, this.radius, 0, Math.PI *2, true);
+        dCtx.closePath();
+        dCtx.fillStyle = this.color;
+        dCtx.strokeStyle = 'black';
+        dCtx.lineWidth = 2;
+        dCtx.fill();
+        dCtx.stroke();
     }
     launch(launchVelocityX = undefined, launchVelocityY = undefined) {
         if (launchVelocityX !== undefined) {
@@ -64,8 +68,8 @@ export class Ball {
             this.collisionData.vertical = false;
         } else {this.position.y += this.velocity.y;}
 
-        if (this.isLaunched && Math.abs(this.velocity.y) < 0.1 && this.position.y > (canvas.height - this.radius)){
-            this.position.y = canvas.height - this.radius;
+        if (this.isLaunched && Math.abs(this.velocity.y) < 0.1 && this.position.y > (staticCanvas.height - this.radius)){
+            this.position.y = staticCanvas.height - this.radius;
             this.isGrounded = true;
         }
  
@@ -137,27 +141,27 @@ export class launchArrow {
     draw() {
         if (this.visibility === true) {
             //Draw arrow shaft
-            ctx.beginPath();
-            ctx.strokeStyle = this.color; 
-            ctx.lineWidth = this.getArrowLength() / 20;
+            dCtx.beginPath();
+            dCtx.strokeStyle = this.color; 
+            dCtx.lineWidth = this.getArrowLength() / 20;
 
             //Adjust shaft end coordinates based on line width
             const arrow = this.getArrowHeadEdges();             // Should move this logic elsewhere
             this.adjustEndCoordinates();
             
-            ctx.moveTo(this.origin.x, this.origin.y);
-            ctx.lineTo(this.end.x, this.end.y);
-            ctx.stroke();
+            dCtx.moveTo(this.origin.x, this.origin.y);
+            dCtx.lineTo(this.end.x, this.end.y);
+            dCtx.stroke();
 
 
             //Draw triangular arrow head
-            ctx.beginPath();
-            ctx.moveTo(this.tip.x, this.tip.y);
-            ctx.lineTo(arrow.leftEdgeCoords.x, arrow.leftEdgeCoords.y);
-            ctx.lineTo(arrow.rightEdgeCoords.x, arrow.rightEdgeCoords.y);
-            ctx.closePath(); 
-            ctx.fillStyle = this.color; 
-            ctx.fill(); 
+            dCtx.beginPath();
+            dCtx.moveTo(this.tip.x, this.tip.y);
+            dCtx.lineTo(arrow.leftEdgeCoords.x, arrow.leftEdgeCoords.y);
+            dCtx.lineTo(arrow.rightEdgeCoords.x, arrow.rightEdgeCoords.y);
+            dCtx.closePath(); 
+            dCtx.fillStyle = this.color; 
+            dCtx.fill(); 
         }
         
     }
@@ -172,7 +176,7 @@ export class launchArrow {
             x: direction.x / directionMagnitude,
             y: direction.y / directionMagnitude,
         };
-        const offsetDistance = ctx.lineWidth * 1.5;
+        const offsetDistance = dCtx.lineWidth * 1.5;
         const adjustedEnd = {
             x: this.end.x - unitDirection.x * offsetDistance,
             y: this.end.y - unitDirection.y * offsetDistance,
@@ -191,22 +195,22 @@ export class Wall {
         this.topLeft = {x: startX, y: startY - height};
         this.topRight = {x: startX + width, y: startY - height};
         this.bottomRight = {x: startX + width, y: startY};
-
+        this.drawn = false;
         Wall.allInstances.push(this);
     }
 
     draw() {
-        ctx.beginPath();
-        ctx.moveTo(this.bottomLeft.x, this.bottomLeft.y);
-        ctx.lineTo(this.topLeft.x, this.topLeft.y);
-        ctx.lineTo(this.topRight.x, this.topRight.y);
-        ctx.lineTo(this.bottomRight.x, this.bottomRight.y);
-        ctx.closePath();
-        ctx.strokeStyle = 'black';
-        ctx.fillStyle = 'brown';
-        ctx.lineWidth = 3;
-        ctx.fill();
-        ctx.stroke();
+        sCtx.beginPath();
+        sCtx.moveTo(this.bottomLeft.x, this.bottomLeft.y);
+        sCtx.lineTo(this.topLeft.x, this.topLeft.y);
+        sCtx.lineTo(this.topRight.x, this.topRight.y);
+        sCtx.lineTo(this.bottomRight.x, this.bottomRight.y);
+        sCtx.closePath();
+        sCtx.strokeStyle = 'black';
+        sCtx.fillStyle = 'brown';
+        sCtx.lineWidth = 3;
+        sCtx.fill();
+        sCtx.stroke();
     }
 }
 
@@ -226,12 +230,12 @@ export class Goal {
 
     draw() {
 
-        ctx.beginPath();
-        ctx.ellipse ( this.position.x, this.position.y, this.horRadius, this.verRadius, 0, 0, 2 * Math.PI);
-        ctx.strokeStyle = 'green'; 
-        ctx.lineWidth = this.girth;
-        ctx.stroke();
-        ctx.closePath(); 
+        sCtx.beginPath();
+        sCtx.ellipse ( this.position.x, this.position.y, this.horRadius, this.verRadius, 0, 0, 2 * Math.PI);
+        sCtx.strokeStyle = 'green'; 
+        sCtx.lineWidth = this.girth;
+        sCtx.stroke();
+        sCtx.closePath(); 
     }
 }
 
@@ -243,16 +247,16 @@ export class GoalPost {
     }
 
     draw() {
-        ctx.beginPath();
-        ctx.moveTo (this.position.x, this.position.y);
-        ctx.lineWidth = this.lineWidth;
-        ctx.strokeStyle = this.color;
-        ctx.lineTo (this.position.x, this.position.y + 155);
-        ctx.lineTo (this.position.x - 30, this.position.y + 185);
-        ctx.moveTo (this.position.x, this.position.y + 155);
-        ctx.lineTo (this.position.x + 30, this.position.y + 185);
-        ctx.stroke();
-        ctx.closePath();
+        sCtx.beginPath();
+        sCtx.moveTo (this.position.x, this.position.y);
+        sCtx.lineWidth = this.lineWidth;
+        sCtx.strokeStyle = this.color;
+        sCtx.lineTo (this.position.x, this.position.y + 155);
+        sCtx.lineTo (this.position.x - 30, this.position.y + 185);
+        sCtx.moveTo (this.position.x, this.position.y + 155);
+        sCtx.lineTo (this.position.x + 30, this.position.y + 185);
+        sCtx.stroke();
+        sCtx.closePath();
     }
 }
 
@@ -262,12 +266,12 @@ export class WinMessage {
     }
 
     draw() {
-        ctx.font = '20px Arial';
-        ctx.fillStyle = 'blue';
-        ctx.textAlign = 'center';        // Align text to the right of the given x-coordinate
-        ctx.textBaseline = 'middle';    // Align text to the bottom of the given y-coordinate
+        sCtx.font = '20px Arial';
+        sCtx.fillStyle = 'blue';
+        sCtx.textAlign = 'center';        // Align text to the right of the given x-coordinate
+        sCtx.textBaseline = 'middle';    // Align text to the bottom of the given y-coordinate
     
         // Place text in the bottom-right corner
-        ctx.fillText('BOOM SHAKALAKA!', canvas.width / 2, 100);
+        sCtx.fillText('BOOM SHAKALAKA!', staticCanvas.width / 2, 100);
     }
 }

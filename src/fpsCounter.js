@@ -1,4 +1,4 @@
-const canvas = document.getElementById('gameCanvas');
+const canvas = document.getElementById('dynamicCanvas');
 const ctx = canvas.getContext('2d');
 
 let lastTime = performance.now();
