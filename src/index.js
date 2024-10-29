@@ -19,10 +19,10 @@ document.addEventListener('DOMContentLoaded', () => {
     
     newBall = new Ball (180, 550, 0, 0, 18, 'red');
     newArrow = new launchArrow (180, 550, 0, 0, 'black');
-    newWall = new Wall (700, 600, 450, 50);
-    newWall2 = new Wall (900, 600, 350, 50);
-    goalPost = new GoalPost (1300, 500, 30);
-    goal = new Goal (1300, 500, 30, 60, 10);
+    newWall = new Wall (700, 700, 450, 50);
+    newWall2 = new Wall (900, 350, 350, 50);
+    goalPost = new GoalPost (1300, 540, 30);
+    goal = new Goal (1300, 540, 30, 60, 10);
     winMessage = new WinMessage (false);
     gameLoop();
 });
