@@ -2,26 +2,29 @@
 body {
     background-color: rgb(221, 219, 217);
     margin: 0;
+    padding: 0;
     display: grid;
     place-items: center;
     height: 100vh;
 }
 
 h1 {
+    padding: 0;
+    margin-top: 10px;
     margin-bottom: 20px;
 }
 
 .container {
     display: grid;
     place-items: center;
-    gap: 20px; /* space between the title and canvas */
+    gap: 10px; /* space between the title and canvas */
 }
 
 #layers {
     display: grid;
     position: relative;
-    width: 1400px;  /* Canvas width to center the grid */
-    height: 600px;  /* Canvas height for the grid */
+    width: 1600px;  /* Canvas width to center the grid */
+    height: 700px;  /* Canvas height for the grid */
 }
 
 canvas {

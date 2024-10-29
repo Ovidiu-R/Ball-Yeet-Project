@@ -23,7 +23,7 @@ function checkCanvasEdges() {
 
 function checkWalls() {
     Wall.allInstances.forEach (obj => {
-
+        //Handle corner collisions
         Object.keys(obj).forEach((key) => {
             const corner = obj[key];
             const distance = Math.sqrt((corner.x - newBall.position.x) ** 2 + (corner.y - newBall.position.y) ** 2);
@@ -42,15 +42,16 @@ function checkWalls() {
                 newBall.velocity = { x: newVelocity.x * 0.8, y: newVelocity.y * 0.8 }; //Factor in elasticity coefficient
             }
         });
-
+        //Handle 'flat' surface collisions
         if (newBall.position.x + newBall.velocity.x >= obj.bottomLeft.x - newBall.radius && 
             newBall.position.x + newBall.velocity.x <= obj.bottomRight.x + newBall.radius &&
-            newBall.position.y + newBall.velocity.y >= obj.topLeft.y) {
+            newBall.position.y + newBall.velocity.y >= obj.topLeft.y &&
+            newBall.position.y + newBall.velocity.y <= obj.bottomLeft.y - newBall.radius) {
                 newBall.collisionData.horizontal = true;
 
             }
         if (newBall.position.y + newBall.velocity.y >= obj.topLeft.y - newBall.radius &&
-            newBall.position.y + newBall.velocity.y <= obj.bottomLeft.y - newBall.radius &&
+            newBall.position.y + newBall.velocity.y <= obj.bottomLeft.y + newBall.radius &&
             newBall.position.x + newBall.velocity.x >= obj.bottomLeft.x &&
             newBall.position.x + newBall.velocity.x <= obj.bottomRight.x) {
                 newBall.collisionData.vertical = true;

@@ -41,7 +41,6 @@ export class Ball {
             this.windSpeed = Math.random() * 0.2 - 0.1; //Apply a random wind vector between -2 and 2
             this.velocity.x += this.windSpeed;
             this.isLaunched = true;
-            // console.log (this.velocity.x, this.velocity.y);
         }
     }
     update() {
@@ -266,12 +265,14 @@ export class WinMessage {
     }
 
     draw() {
-        sCtx.font = '20px Arial';
-        sCtx.fillStyle = 'blue';
+        sCtx.font = '25px Verdana';
+        sCtx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+        sCtx.shadowBlue = 4;
+        sCtx.fillStyle = 'black';
         sCtx.textAlign = 'center';        // Align text to the right of the given x-coordinate
-        sCtx.textBaseline = 'middle';    // Align text to the bottom of the given y-coordinate
+        sCtx.textBaseline = 'top';    // Align text to the bottom of the given y-coordinate
     
         // Place text in the bottom-right corner
-        sCtx.fillText('BOOM SHAKALAKA!', staticCanvas.width / 2, 100);
+        sCtx.fillText('BOOM SHAKALAKA!', staticCanvas.width / 2, 20);
     }
 }
