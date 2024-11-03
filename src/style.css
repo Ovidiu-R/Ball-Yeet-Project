@@ -49,31 +49,3 @@ canvas {
     z-index: 99;
     background-color: transparent;
 }
-
-/* body {
-    background-color: rgb(221, 219, 217);
-}
-
-.container {
-    display: grid;
-    place-items: center;
-    position: relative;
-}
-
-canvas {
-    border: 4px solid black; 
-}
-
-#layers {
-    place-self: left;
-}
-
-#staticCanvas {
-    z-index: 1;
-    background-color: aqua;
-}
-
-#dynamicCanvas {
-    z-index: 2;
-    background-color: transparent;
-} */

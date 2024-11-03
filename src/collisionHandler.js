@@ -2,7 +2,7 @@ import { newBall, goal } from ".";
 import { Wall } from "./gameObjects";
 import { scorePoint } from "./gameState";
 const canvas = document.getElementById('staticCanvas'); //Too lazy to import
-const offsetDistance = 2;
+const offsetDistance = 3;
 
 export function basicHandler() {
     checkCanvasEdges();

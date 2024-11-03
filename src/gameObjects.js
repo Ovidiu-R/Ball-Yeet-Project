@@ -1,5 +1,5 @@
 import { endY, getLaunchArrowCoords } from './interactivityHandler';
-// import { staticCanvas, dynamicCanvas, sCtx, dCtx } from ".";
+import { newBall } from ".";
 let staticCanvas = document.getElementById('staticCanvas');
 let sCtx = staticCanvas.getContext('2d');
 let dynamicCanvas = document.getElementById('dynamicCanvas');
@@ -92,9 +92,9 @@ export class launchArrow {
     }
 
     
-    update(endX, endY, visibility) {
-        this.end.x = endX;
-        this.end.y = endY;
+    update(originX, originY, endX, endY, visibility) {
+        this.origin = {x: originX, y: originY};
+        this.end = {x: endX, y: endY};
         this.visibility = visibility;
     }
 
@@ -107,7 +107,7 @@ export class launchArrow {
     getArrowHeadEdges() {
         const edgeAngleOffset = 200 * Math.PI / 180;
         let edgeLength;
-        this.end = getLaunchArrowCoords();
+        // this.end = getLaunchArrowCoords();
         this.tip = getLaunchArrowCoords();
         // const arrowTipCoords = getLaunchArrowCoords();
 
@@ -180,7 +180,7 @@ export class launchArrow {
             x: this.end.x - unitDirection.x * offsetDistance,
             y: this.end.y - unitDirection.y * offsetDistance,
         };
-        this.update(adjustedEnd.x, adjustedEnd.y, false);
+        this.update(newBall.position.x, newBall.position.y, adjustedEnd.x, adjustedEnd.y, false);
     }
 }
 
