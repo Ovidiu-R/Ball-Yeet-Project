@@ -243,6 +243,7 @@ export class GoalPost {
         this.position = { x: centreX, y: centreY - ellipseHeight +5};
         this.lineWidth = lineWidth;
         this.color = color;
+        this.drawn = false;
     }
 
     draw() {

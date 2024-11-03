@@ -10,9 +10,7 @@ let sCtx = staticCanvas.getContext('2d');
 let dynamicCanvas = document.getElementById('dynamicCanvas');
 let dCtx = dynamicCanvas.getContext('2d');
 
-export function gameLoop() {
-    clearCanvas();
-    fpsCounter();
+setInterval(function(){
     if (startX !== undefined) {
         let arrowTip = getLaunchArrowCoords();
         newArrow.update(arrowTip.x, arrowTip.y, true);
@@ -22,10 +20,31 @@ export function gameLoop() {
         newBall.launch(launchVelocity.x, launchVelocity.y);
         launchVelocity = undefined;
     }
-    goalPost.draw();
-
     basicHandler();
     newBall.update();
+    
+},1000/fpsCap); //  note ms = 1000/fps
+
+export function gameLoop() {
+    clearCanvas();
+    fpsCounter();
+                                        // if (startX !== undefined) {
+                                        //     let arrowTip = getLaunchArrowCoords();
+                                        //     newArrow.update(arrowTip.x, arrowTip.y, true);
+                                        // }
+                                        
+                                        // if (launchVelocity !== undefined) {
+                                        //     newBall.launch(launchVelocity.x, launchVelocity.y);
+                                        //     launchVelocity = undefined;
+                                        // }
+    if (goalPost.drawn == false) {
+        goalPost.draw();
+        goalPost.drawn = true;
+    }
+
+
+                                        // basicHandler();
+                                        // newBall.update();
     if (newBall.position.y <= goal.position.y) {
         goal.draw();
         newBall.draw();
@@ -43,17 +62,17 @@ export function gameLoop() {
         console.log('draw background');
     }
    
-
+    requestAnimationFrame(gameLoop);
     //Limit framerate by wrapping RAF in a setTimeout block. Simple method that would introduce desync as project complexity increases
     //Decoupling logic from RAF loop and running it in a separate TimeInterval thread and only updating graphics in RAF would be preferable in complex scenarios
-    setTimeout(() => {
-        requestAnimationFrame(gameLoop);
-    }, 1000 / fpsCap)
+    // setTimeout(() => {
+    //     requestAnimationFrame(gameLoop);
+    // }, 1000 / fpsCap)
 }
 
-function drawStaticElements() {
+// function drawStaticElements() {
     
-}
+// }
 
 function clearCanvas() {
     //With destination-out, any non-transparent shape will erase existing content where it’s drawn.
