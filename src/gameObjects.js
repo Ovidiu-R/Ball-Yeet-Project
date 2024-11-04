@@ -1,5 +1,7 @@
 import { endY, getLaunchArrowCoords } from './interactivityHandler';
 import { newBall } from ".";
+import mainBackground from './media/concrete-texture1.jpg';
+import wallBackground from './media/metal-texture1.jpg';
 let staticCanvas = document.getElementById('staticCanvas');
 let sCtx = staticCanvas.getContext('2d');
 let dynamicCanvas = document.getElementById('dynamicCanvas');
@@ -67,8 +69,8 @@ export class Ball {
             this.collisionData.vertical = false;
         } else {this.position.y += this.velocity.y;}
 
-        if (this.isLaunched && Math.abs(this.velocity.y) < 0.1 && this.position.y > (staticCanvas.height - this.radius)){
-            this.position.y = staticCanvas.height - this.radius;
+        if (this.isLaunched && Math.abs(this.velocity.y) < 0.1 && this.position.y > (staticCanvas.height - this.radius - 150)){
+            this.position.y = staticCanvas.height - this.radius -150;
             this.isGrounded = true;
         }
  
@@ -189,16 +191,26 @@ export class launchArrow {
 export class Wall {
     static allInstances = []; //Hold all wall instances
 
-    constructor (startX, startY, height, width) {
+    constructor (startX, startY, height, width, material = "metal") {
         this.bottomLeft = {x: startX, y: startY};
         this.topLeft = {x: startX, y: startY - height};
         this.topRight = {x: startX + width, y: startY - height};
         this.bottomRight = {x: startX + width, y: startY};
         this.drawn = false;
+        this.material = material;
         Wall.allInstances.push(this);
     }
 
     draw() {
+        const backgroundImage = new Image();
+        if (this.material == 'metal') {
+            backgroundImage.src = wallBackground;
+        } else if (this.material == 'stone') {
+            backgroundImage.src = wallBackground;
+        }
+        // backgroundImage.onload = () => {
+        //     sCtx.drawImage(backgroundImage, 0, 0, staticCanvas.width, staticCanvas.height);
+        // }
         sCtx.beginPath();
         sCtx.moveTo(this.bottomLeft.x, this.bottomLeft.y);
         sCtx.lineTo(this.topLeft.x, this.topLeft.y);
@@ -206,7 +218,7 @@ export class Wall {
         sCtx.lineTo(this.bottomRight.x, this.bottomRight.y);
         sCtx.closePath();
         sCtx.strokeStyle = 'black';
-        sCtx.fillStyle = 'brown';
+        // sCtx.fillStyle = 'brown';
         sCtx.lineWidth = 3;
         sCtx.fill();
         sCtx.stroke();
@@ -275,5 +287,18 @@ export class WinMessage {
     
         // Place text in the bottom-right corner
         sCtx.fillText('BOOM SHAKALAKA!', staticCanvas.width / 2, 20);
+    }
+}
+
+export class CanvasBackground {
+    constructor (loaded = false) {
+        this.loaded = loaded;
+    }
+    draw() {
+        const backgroundImage = new Image();
+        backgroundImage.src = mainBackground;
+        backgroundImage.onload = () => {
+            sCtx.drawImage(backgroundImage, 0, 0, staticCanvas.width, staticCanvas.height);
+        }
     }
 }

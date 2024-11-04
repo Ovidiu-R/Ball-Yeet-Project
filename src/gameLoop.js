@@ -1,7 +1,7 @@
 import { Ball, launchArrow , Wall} from "./gameObjects";
 import { basicHandler } from "./collisionHandler";
 import { launchVelocity, getLaunchArrowCoords, endX, endY, startX } from "./interactivityHandler";
-import { newBall, newArrow, goal, goalPost, winMessage } from ".";
+import { newBall, newArrow, goal, goalPost, winMessage, canvasBackground } from ".";
 import  { fpsCounter } from "./fpsCounter.js";
 const fpsCap = 60;
 
@@ -30,7 +30,8 @@ setInterval(function(){
 export function gameLoop() {
     clearCanvas();
     fpsCounter();
-                                    
+    canvasBackground.draw();    
+
     if (goalPost.drawn == false) {
         goalPost.draw();
         goalPost.drawn = true;
