@@ -2,11 +2,13 @@ import { endY, getLaunchArrowCoords } from './interactivityHandler';
 import { newBall, canvasBackground, goalPost } from ".";
 import ebony from './media/ebony-small.jpg';
 import bricks from './media/bricks-small.jpg';
+import rust from './media/rust-small.jpg';
+import metal1 from './media/metal-tiny1.jpg';
 let staticCanvas = document.getElementById('staticCanvas');
 let sCtx = staticCanvas.getContext('2d');
 let dynamicCanvas = document.getElementById('dynamicCanvas');
 let dCtx = dynamicCanvas.getContext('2d');
-let mainBackground, secondaryBackground;
+let mainBackground, secondaryBackground, goalPostFill, hoopFill;
 
 
 // B A L L
@@ -203,11 +205,7 @@ export class Wall {
     }
 
     draw() {
-            // sCtx.save();
-            // sCtx.scale(0.1, 0.1);
             const pattern = sCtx.createPattern(secondaryBackground, 'repeat');
-            // sCtx.restore();
-            sCtx.globalAlpha = 1.0;
             sCtx.beginPath();
             sCtx.moveTo(this.bottomLeft.x, this.bottomLeft.y);
             sCtx.lineTo(this.topLeft.x, this.topLeft.y);
@@ -237,18 +235,28 @@ export class Goal {
     }
 
     draw() {
+        const gradient = dCtx.createRadialGradient(this.position.x, this.position.y, this.verRadius, this.position.x, this.position.y, this.horRadius);
 
+        // Set gradient color stops to create a metallic effect
+        gradient.addColorStop(0, '#e6e6e6');   // Light silver at the center
+        gradient.addColorStop(0.3, '#c0c0c0'); // Slightly darker silver
+        gradient.addColorStop(0.6, '#a6a6a6'); // Medium grey
+        gradient.addColorStop(1, '#595959');   // Dark grey at the edges
+
+        // Apply the gradient as the fill style
+        dCtx.fillStyle = 'orange';
+        dCtx.fill();
+        dCtx.lineWidth = this.girth;
         dCtx.beginPath();
         dCtx.ellipse ( this.position.x, this.position.y, this.horRadius, this.verRadius, 0, 0, 2 * Math.PI);
-        dCtx.strokeStyle = 'green'; 
-        dCtx.lineWidth = this.girth;
+        dCtx.strokeStyle = 'green';
         dCtx.stroke();
         dCtx.closePath(); 
     }
 }
 
 export class GoalPost {
-    constructor (centreX, centreY, ellipseHeight, lineWidth = 7, color = 'black') {
+    constructor (centreX, centreY, ellipseHeight, lineWidth = 10, color = 'black') {
         this.position = { x: centreX, y: centreY - ellipseHeight +5};
         this.lineWidth = lineWidth;
         this.color = color;
@@ -256,10 +264,11 @@ export class GoalPost {
     }
 
     draw() {
+        const pattern = sCtx.createPattern(goalPostFill, 'repeat');
+        sCtx.lineWidth = this.lineWidth;
+        sCtx.strokeStyle = pattern;
         sCtx.beginPath();
         sCtx.moveTo (this.position.x, this.position.y);
-        sCtx.lineWidth = this.lineWidth;
-        sCtx.strokeStyle = this.color;
         sCtx.lineTo (this.position.x, this.position.y + 155);
         sCtx.lineTo (this.position.x - 30, this.position.y + 185);
         sCtx.moveTo (this.position.x, this.position.y + 155);
@@ -268,6 +277,8 @@ export class GoalPost {
         sCtx.closePath();
     }
 }
+
+// W I N   M E S S A G E
 
 export class WinMessage {
     constructor (visibility = false, color = 'black') {
@@ -315,6 +326,8 @@ export async function drawStaticCanvas() {
     try {
         mainBackground = await loadImage (ebony);
         secondaryBackground = await loadImage (bricks);
+        goalPostFill = await loadImage (metal1);
+        hoopFill = await loadImage (rust);
     } catch (error) {
         console.error(error);
     }
