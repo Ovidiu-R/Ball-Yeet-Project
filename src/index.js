@@ -18,13 +18,13 @@ document.addEventListener('DOMContentLoaded', () => {
     //Create and export single instance of Ball class that will be used throughout the codebase
     
     newBall = new Ball (180, 530, 0, 0, 18, 'red');
-    newArrow = new launchArrow (180, 530, 0, 0, 'black');
+    newArrow = new launchArrow (180, 530, 0, 0, 'yellow');
     newWall = new Wall (700, 550, 320, 50);
     newWall2 = new Wall (900, 250, 250, 50);
     ground = new Wall (0, 700, 150, 1600);
     goalPost = new GoalPost (1300, 390, 30);
     goal = new Goal (1300, 390, 30, 60, 10);
-    winMessage = new WinMessage (false);
+    winMessage = new WinMessage (false, 'white');
     canvasBackground = new CanvasBackground();
     gameLoop();
 });

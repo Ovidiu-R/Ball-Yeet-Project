@@ -1,7 +1,7 @@
 import { endY, getLaunchArrowCoords } from './interactivityHandler';
 import { newBall, canvasBackground, goalPost } from ".";
-import ebony from './media/ebony.jpg';
-import bricks from './media/bricks.jpg';
+import ebony from './media/ebony-small.jpg';
+import bricks from './media/bricks-small.jpg';
 let staticCanvas = document.getElementById('staticCanvas');
 let sCtx = staticCanvas.getContext('2d');
 let dynamicCanvas = document.getElementById('dynamicCanvas');
@@ -203,10 +203,10 @@ export class Wall {
     }
 
     draw() {
-            sCtx.save();
-            sCtx.scale(0.1, 0.1);
+            // sCtx.save();
+            // sCtx.scale(0.1, 0.1);
             const pattern = sCtx.createPattern(secondaryBackground, 'repeat');
-            sCtx.restore();
+            // sCtx.restore();
             sCtx.globalAlpha = 1.0;
             sCtx.beginPath();
             sCtx.moveTo(this.bottomLeft.x, this.bottomLeft.y);
@@ -270,15 +270,16 @@ export class GoalPost {
 }
 
 export class WinMessage {
-    constructor (visibility = false) {
+    constructor (visibility = false, color = 'black') {
         this.visibility = visibility;
+        this.color = color;
     }
 
     draw() {
         sCtx.font = '25px Verdana';
         sCtx.shadowColor = 'rgba(0, 0, 0, 0.5)';
         sCtx.shadowBlue = 4;
-        sCtx.fillStyle = 'black';
+        sCtx.fillStyle = this.color;
         sCtx.textAlign = 'center';        // Align text to the right of the given x-coordinate
         sCtx.textBaseline = 'top';    // Align text to the bottom of the given y-coordinate
     
@@ -292,7 +293,9 @@ export class CanvasBackground {
         this.loaded = loaded;
     }
     draw() {
-        sCtx.drawImage(mainBackground, 0, 0, staticCanvas.width, staticCanvas.height);
+        const pattern = sCtx.createPattern(mainBackground, 'repeat');
+        sCtx.fillStyle = pattern;
+        sCtx.fillRect(0, 0, staticCanvas.width, staticCanvas.height);
     }
 }
 
@@ -305,6 +308,8 @@ async function loadImage(src) {
     });
     return image;
 }
+
+// async function scalePattern
 
 export async function drawStaticCanvas() {
     try {
