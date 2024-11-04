@@ -1,11 +1,12 @@
 import { endY, getLaunchArrowCoords } from './interactivityHandler';
-import { newBall } from ".";
-import mainBackground from './media/concrete-texture1.jpg';
-import wallBackground from './media/metal-texture1.jpg';
+import { newBall, canvasBackground, goalPost } from ".";
+import ebony from './media/ebony.jpg';
+import bricks from './media/bricks.jpg';
 let staticCanvas = document.getElementById('staticCanvas');
 let sCtx = staticCanvas.getContext('2d');
 let dynamicCanvas = document.getElementById('dynamicCanvas');
 let dCtx = dynamicCanvas.getContext('2d');
+let mainBackground, secondaryBackground;
 
 
 // B A L L
@@ -202,26 +203,22 @@ export class Wall {
     }
 
     draw() {
-        const backgroundImage = new Image();
-        if (this.material == 'metal') {
-            backgroundImage.src = wallBackground;
-        } else if (this.material == 'stone') {
-            backgroundImage.src = wallBackground;
-        }
-        // backgroundImage.onload = () => {
-        //     sCtx.drawImage(backgroundImage, 0, 0, staticCanvas.width, staticCanvas.height);
-        // }
-        sCtx.beginPath();
-        sCtx.moveTo(this.bottomLeft.x, this.bottomLeft.y);
-        sCtx.lineTo(this.topLeft.x, this.topLeft.y);
-        sCtx.lineTo(this.topRight.x, this.topRight.y);
-        sCtx.lineTo(this.bottomRight.x, this.bottomRight.y);
-        sCtx.closePath();
-        sCtx.strokeStyle = 'black';
-        // sCtx.fillStyle = 'brown';
-        sCtx.lineWidth = 3;
-        sCtx.fill();
-        sCtx.stroke();
+            sCtx.save();
+            sCtx.scale(0.1, 0.1);
+            const pattern = sCtx.createPattern(secondaryBackground, 'repeat');
+            sCtx.restore();
+            sCtx.globalAlpha = 1.0;
+            sCtx.beginPath();
+            sCtx.moveTo(this.bottomLeft.x, this.bottomLeft.y);
+            sCtx.lineTo(this.topLeft.x, this.topLeft.y);
+            sCtx.lineTo(this.topRight.x, this.topRight.y);
+            sCtx.lineTo(this.bottomRight.x, this.bottomRight.y);
+            sCtx.closePath();
+            sCtx.strokeStyle = 'black';
+            sCtx.fillStyle = pattern;
+            sCtx.lineWidth = 3;
+            sCtx.fill(); 
+            sCtx.stroke();   
     }
 }
 
@@ -295,10 +292,42 @@ export class CanvasBackground {
         this.loaded = loaded;
     }
     draw() {
-        const backgroundImage = new Image();
-        backgroundImage.src = mainBackground;
-        backgroundImage.onload = () => {
-            sCtx.drawImage(backgroundImage, 0, 0, staticCanvas.width, staticCanvas.height);
-        }
+        sCtx.drawImage(mainBackground, 0, 0, staticCanvas.width, staticCanvas.height);
     }
+}
+
+async function loadImage(src) {
+    const image = new Image();
+    image.src = src;
+    await new Promise((resolve, reject) => {
+        image.onload = () => resolve(image);
+        image.onerror = () => reject(new Error(`Failed to load image: ${src}`));
+    });
+    return image;
+}
+
+export async function drawStaticCanvas() {
+    try {
+        mainBackground = await loadImage (ebony);
+        secondaryBackground = await loadImage (bricks);
+    } catch (error) {
+        console.error(error);
+    }
+    
+    if (canvasBackground.loaded !== true) {
+        canvasBackground.draw();    
+        canvasBackground.loaded = true;
+    }
+
+    if (goalPost.drawn == false) {
+        goalPost.draw();
+        goalPost.drawn = true;
+    }
+
+    if (Wall.allInstances[0].drawn == false) {
+        Wall.allInstances.forEach(obj => obj.draw());
+        Wall.allInstances[0].drawn = true;
+        console.log('draw background');
+    }
+
 }
