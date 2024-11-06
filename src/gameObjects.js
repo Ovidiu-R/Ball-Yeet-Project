@@ -1,5 +1,5 @@
 import { endY, getLaunchArrowCoords } from './interactivityHandler';
-import { newBall, canvasBackground, goalPost } from ".";
+import { newBall, canvasBackground, goalPost, newRamp } from ".";
 import ebony from './media/ebony-small.jpg';
 import bricks from './media/bricks-small.jpg';
 import rust from './media/rust-small.jpg';
@@ -221,6 +221,21 @@ export class Wall {
     }
 }
 
+// R A M P
+export class Ramp {
+    constructor (topX, topY, bottomX, bottomY) {
+        this.top = { x: topX, y: topY };
+        this.bottom = { x: bottomX, y: bottomY };
+    }
+
+    draw() {
+        sCtx.beginPath();
+        sCtx.moveTo(this.top.x, this.top.y);
+        sCtx.lineTo(this.bottom.x, this.bottom.y);
+        sCtx.stroke();   
+    }
+}
+
 // G O A L
 
 export class Goal {
@@ -343,6 +358,7 @@ export async function drawStaticCanvas() {
         Wall.allInstances[0].drawn = true;
         console.log('draw background');
     }
+    newRamp.draw();
 
 }
 

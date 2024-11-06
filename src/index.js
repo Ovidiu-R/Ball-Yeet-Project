@@ -1,10 +1,10 @@
 import './style.css';
-import { Ball, Wall, launchArrow, Goal, GoalPost, WinMessage, CanvasBackground, loadImages } from './gameObjects.js';
+import { Ball, Wall, launchArrow, Goal, GoalPost, WinMessage, CanvasBackground, Ramp, loadImages } from './gameObjects.js';
 import { gameLoop } from './gameLoop.js';
 
 export let newBall;
 export let newArrow;
-export let newWall, newWall2, ground, goal, goalPost, winMessage, canvasBackground;
+export let newWall, newWall2, ground, goal, goalPost, winMessage, canvasBackground, newRamp;
 // export let staticCanvas = document.getElementById('staticCanvas');
 // export let sCtx = staticCanvas.getContext('2d');
 // export let dynamicCanvas = document.getElementById('dynamicCanvas');
@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     goal = new Goal (1300, 390, 30, 60, 10);
     winMessage = new WinMessage (false, 'white');
     canvasBackground = new CanvasBackground();
+    newRamp = new Ramp (700, 230, 350, 550);
 
     async function startGame() {
         await loadImages(); // Load all images

@@ -97,3 +97,4 @@ function getBounceVelocity(corner) {
     newBall.position = { x: newBall.position.x -= positionOffset.x, y: newBall.position.y -= positionOffset.y };
     newBall.velocity = { x: newVelocity.x * 0.8, y: newVelocity.y * 0.8 }; //Factor in elasticity coefficient
 }
+
