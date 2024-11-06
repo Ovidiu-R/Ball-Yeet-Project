@@ -1,4 +1,4 @@
-import { Ball, launchArrow , Wall, drawStaticCanvas} from "./gameObjects";
+import { Ball, launchArrow , Wall, drawStaticCanvas, loadImages} from "./gameObjects";
 import { basicHandler } from "./collisionHandler";
 import { launchVelocity, getLaunchArrowCoords, endX, endY, startX } from "./interactivityHandler";
 import { newBall, newArrow, goal, goalPost, winMessage, canvasBackground } from ".";
@@ -33,14 +33,6 @@ export function gameLoop() {
 
     drawStaticCanvas();
 
-    // if (canvasBackground.loaded !== true) {
-    //     canvasBackground.draw();    
-    // }
-
-    // if (goalPost.drawn == false) {
-    //     goalPost.draw();
-    //     goalPost.drawn = true;
-    // }
     if (newBall.position.y <= goal.position.y) {
         goal.draw();
         newBall.draw();
@@ -52,11 +44,6 @@ export function gameLoop() {
         winMessage.draw();
     }
     newArrow.draw();
-    // if(Wall.allInstances[0].drawn == false) {
-    //     Wall.allInstances.forEach(obj => obj.draw());
-    //     Wall.allInstances[0].drawn = true;
-    //     console.log('draw background');
-    // }
    
     requestAnimationFrame(gameLoop);
 }

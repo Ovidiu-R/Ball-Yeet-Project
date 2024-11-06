@@ -1,5 +1,5 @@
 import './style.css';
-import { Ball, Wall, launchArrow, Goal, GoalPost, WinMessage, CanvasBackground } from './gameObjects.js';
+import { Ball, Wall, launchArrow, Goal, GoalPost, WinMessage, CanvasBackground, loadImages } from './gameObjects.js';
 import { gameLoop } from './gameLoop.js';
 
 export let newBall;
@@ -26,5 +26,10 @@ document.addEventListener('DOMContentLoaded', () => {
     goal = new Goal (1300, 390, 30, 60, 10);
     winMessage = new WinMessage (false, 'white');
     canvasBackground = new CanvasBackground();
-    gameLoop();
+
+    async function startGame() {
+        await loadImages(); // Load all images
+        gameLoop();         // Start the game loop
+    }
+    startGame();
 });

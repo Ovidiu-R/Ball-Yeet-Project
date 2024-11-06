@@ -4,13 +4,14 @@ import ebony from './media/ebony-small.jpg';
 import bricks from './media/bricks-small.jpg';
 import rust from './media/rust-small.jpg';
 import metal1 from './media/metal-tiny1.jpg';
+import metal2 from './media/metal-vent-tiny.jpg';
 let staticCanvas = document.getElementById('staticCanvas');
 let sCtx = staticCanvas.getContext('2d');
 let dynamicCanvas = document.getElementById('dynamicCanvas');
 let dCtx = dynamicCanvas.getContext('2d');
-let mainBackground, secondaryBackground, goalPostFill, hoopFill;
+let mainBackground, secondaryBackground, goalPostFill, goalFill;
 
-
+// hoopFill = await loadImage (rust);
 // B A L L
 
 export class Ball {
@@ -235,21 +236,13 @@ export class Goal {
     }
 
     draw() {
-        const gradient = dCtx.createRadialGradient(this.position.x, this.position.y, this.verRadius, this.position.x, this.position.y, this.horRadius);
-
-        // Set gradient color stops to create a metallic effect
-        gradient.addColorStop(0, '#e6e6e6');   // Light silver at the center
-        gradient.addColorStop(0.3, '#c0c0c0'); // Slightly darker silver
-        gradient.addColorStop(0.6, '#a6a6a6'); // Medium grey
-        gradient.addColorStop(1, '#595959');   // Dark grey at the edges
-
-        // Apply the gradient as the fill style
-        dCtx.fillStyle = 'orange';
-        dCtx.fill();
-        dCtx.lineWidth = this.girth;
+        
+        const pattern = dCtx.createPattern(goalFill, 'repeat');
+        dCtx.strokeStyle = pattern;
         dCtx.beginPath();
         dCtx.ellipse ( this.position.x, this.position.y, this.horRadius, this.verRadius, 0, 0, 2 * Math.PI);
-        dCtx.strokeStyle = 'green';
+        // dCtx.strokeStyle = 'green'; 
+        dCtx.lineWidth = this.girth;
         dCtx.stroke();
         dCtx.closePath(); 
     }
@@ -320,17 +313,20 @@ async function loadImage(src) {
     return image;
 }
 
-// async function scalePattern
-
-export async function drawStaticCanvas() {
+export async function loadImages() {
     try {
-        mainBackground = await loadImage (ebony);
-        secondaryBackground = await loadImage (bricks);
-        goalPostFill = await loadImage (metal1);
-        hoopFill = await loadImage (rust);
+        mainBackground = await loadImage(ebony);
+        secondaryBackground = await loadImage(bricks);
+        goalPostFill = await loadImage(metal1);
+        goalFill = await loadImage(metal2);
     } catch (error) {
         console.error(error);
     }
+}
+
+// async function scalePattern
+
+export async function drawStaticCanvas() {
     
     if (canvasBackground.loaded !== true) {
         canvasBackground.draw();    
@@ -349,3 +345,4 @@ export async function drawStaticCanvas() {
     }
 
 }
+
