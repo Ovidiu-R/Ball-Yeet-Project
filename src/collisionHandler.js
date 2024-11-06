@@ -1,12 +1,18 @@
 import { newBall, goal } from ".";
-import { Wall } from "./gameObjects";
+import { Wall, Slope } from "./gameObjects";
 import { scorePoint } from "./gameState";
 const canvas = document.getElementById('staticCanvas'); //Too lazy to import
 const offsetDistance = 3;
+const slopeThreshold = 2;
+const friction = 0.01;
+const gravity = 0.25;
+const elasticityCoeff = 0.8;
+
 
 export function basicHandler() {
     checkCanvasEdges();
     checkWalls();
+    checkSlopes();
     checkGoal();
 }
 
@@ -95,6 +101,71 @@ function getBounceVelocity(corner) {
     const newVelocity = { x: newBall.velocity.x - subtrahend.x, y: newBall.velocity.y - subtrahend.y };
     //Move ball back along bounce vector to ensure it doesn't get stuck in geometry and then modify ball velocity
     newBall.position = { x: newBall.position.x -= positionOffset.x, y: newBall.position.y -= positionOffset.y };
-    newBall.velocity = { x: newVelocity.x * 0.8, y: newVelocity.y * 0.8 }; //Factor in elasticity coefficient
+    newBall.velocity = { x: newVelocity.x * friction, y: newVelocity.y * friction }; //Factor in elasticity coefficient
 }
 
+function checkSlopes() {
+    Slope.allInstances.forEach (slope => {
+        const { top, bottom } = slope;
+        // Calculate slope vector and vector from pointA to the ball
+        let slopeVector = { x: bottom.x - top.x, y: bottom.y - top.y };
+        let AtoBall = { x: newBall.position.x - top.x, y: newBall.position.y - top.y };
+
+        // Calculate perpendicular distance from ball center to slope line
+        let numerator = Math.abs(slopeVector.y * AtoBall.x - slopeVector.x * AtoBall.y);
+        let denominator = Math.sqrt(slopeVector.y ** 2 + slopeVector.x ** 2);
+        let distance = numerator / denominator;
+
+        // Check if ball is within contact threshold (distance <= radius)
+        if (distance <= newBall.radius) {
+            // Check if the ball's center is within the bounds of the segment
+            let dotProductSlope = slopeVector.x * slopeVector.x + slopeVector.y * slopeVector.y;
+            let dotProductAtoBall = AtoBall.x * slopeVector.x + AtoBall.y * slopeVector.y;
+            let projection = dotProductAtoBall / dotProductSlope;
+            const normalSlopeVector = {x: - slopeVector.y, y: slopeVector.x };
+            const magnitude = Math.sqrt(normalSlopeVector.x ** 2 + normalSlopeVector.y ** 2);
+            const normalizedSlopeVector = { x: normalSlopeVector.x / magnitude, y: normalSlopeVector.y / magnitude };
+            // Find perpendicular and parallel components of velocity
+            const dotProduct = newBall.velocity.x * normalizedSlopeVector.x + newBall.velocity.y * normalizedSlopeVector.y;
+            const perpendicularVelocity = { x: normalizedSlopeVector.x * dotProduct, y: normalizedSlopeVector.y * dotProduct };
+            const parallelVelocity = {
+                x: newBall.velocity.x - perpendicularVelocity.x,
+                y: newBall.velocity.y - perpendicularVelocity.y
+            };
+            if (projection >= 0 && projection <= 1) {
+                // Ball is in contact with this slope
+                console.log("Ball is in contact with slope", slope);
+                
+                
+                
+                // Check if the perpendicular velocity is below the threshold to transition to sliding
+                if (Math.hypot(perpendicularVelocity.x, perpendicularVelocity.y) < slopeThreshold) {
+                    // Set perpendicular velocity to zero for sliding
+                    newBall.velocity = parallelVelocity;
+                    newBall.velocity.y -= 0.25; // TEMPORARY FIX TO SHUT OFF GENERAL GRAVITY
+                    // Add gravity parallel to the slope
+                    const gravityAlongSlope = gravity * Math.sin(slope.angle); // Use slope angle
+                    newBall.velocity.x += gravityAlongSlope * Math.cos(slope.angle);
+                    newBall.velocity.y += gravityAlongSlope * Math.sin(slope.angle);
+                    //Add friction while sliding
+                    const slopeFriction = friction * gravityAlongSlope;
+                    newBall.velocity.x -= slopeFriction * Math.cos(slope.angle);
+                    newBall.velocity.y -= slopeFriction * Math.sin(slope.angle);
+                } else {
+                    // Handle bounce by subtracting 2*(v . n)*n and applying elasticity
+                    const bounceVelocity = {
+                        x: newBall.velocity.x - 2 * perpendicularVelocity.x,
+                        y: newBall.velocity.y - 2 * perpendicularVelocity.y
+                    };
+                    newBall.velocity.x = bounceVelocity.x * elasticityCoeff;
+                    newBall.velocity.y = bounceVelocity.y * elasticityCoeff;
+    
+                    //Offset position to avoid overlaps
+                    newBall.position.x += normalSlopeVector.x * 0.01;
+                    newBall.position.y += normalSlopeVector.y * 0.01;
+                }
+
+            } 
+        }
+    });
+}
