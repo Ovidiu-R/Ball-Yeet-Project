@@ -221,13 +221,14 @@ export class Wall {
     }
 }
 
-// R A M P
+// S L O P E
 export class Slope {
     static allInstances = []; //Hold all wall instances
 
     constructor (topX, topY, bottomX, bottomY) {
         this.top = { x: topX, y: topY };
         this.bottom = { x: bottomX, y: bottomY };
+        this.drawn = false;
         Slope.allInstances.push(this);
     }
 
@@ -359,9 +360,12 @@ export async function drawStaticCanvas() {
     if (Wall.allInstances[0].drawn == false) {
         Wall.allInstances.forEach(obj => obj.draw());
         Wall.allInstances[0].drawn = true;
-        console.log('draw background');
     }
-    newSlope.draw();
+    if (Slope.allInstances[0].drawn == false) {
+        Slope.allInstances.forEach(obj => obj.draw());
+        Slope.allInstances[0].drawn = true;
+        
+    }
 
 }
 

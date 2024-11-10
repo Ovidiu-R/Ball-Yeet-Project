@@ -107,7 +107,6 @@ function getBounceVelocity(corner) {
 function checkSlopes() {
     Slope.allInstances.forEach (slope => {
         const { top, bottom } = slope;
-        // Calculate slope vector and vector from pointA to the ball
         let slopeVector = { x: bottom.x - top.x, y: bottom.y - top.y };
         let slopeAngle = Math.atan2(slopeVector.y, slopeVector.x);
         let AtoBall = { x: newBall.position.x - top.x, y: newBall.position.y - top.y };
@@ -123,7 +122,10 @@ function checkSlopes() {
             let dotProductSlope = slopeVector.x * slopeVector.x + slopeVector.y * slopeVector.y;
             let dotProductAtoBall = AtoBall.x * slopeVector.x + AtoBall.y * slopeVector.y;
             let projection = dotProductAtoBall / dotProductSlope;
-            const normalSlopeVector = {x: - slopeVector.y, y: slopeVector.x };
+            let normalSlopeVector = {x: - slopeVector.y, y: slopeVector.x };
+            // if (normalSlopeVector.y < 0) {
+            //     normalSlopeVector = { x: slopeVector.y, y: -slopeVector.x };
+            // }
             const magnitude = Math.sqrt(normalSlopeVector.x ** 2 + normalSlopeVector.y ** 2);
             const normalizedSlopeVector = { x: normalSlopeVector.x / magnitude, y: normalSlopeVector.y / magnitude };
             // Find perpendicular and parallel components of velocity
@@ -139,14 +141,11 @@ function checkSlopes() {
 
                 // Check if the perpendicular velocity is below the threshold to transition to sliding
                 if (Math.hypot(perpendicularVelocity.x, perpendicularVelocity.y) < slopeThreshold) {
-                    console.log('SLIDING');
                     // Set perpendicular velocity to zero for sliding
                     newBall.velocity = parallelVelocity;
-                    console.log(newBall.velocity);
                     newBall.velocity.y -= 0.25; // TEMPORARY FIX TO SHUT OFF GENERAL GRAVITY
                     // Add gravity parallel to the slope
                     const gravityAlongSlope = gravity * Math.sin(slopeAngle); // Use slope angle
-                    console.log(gravity);
                     console.log(gravityAlongSlope);
                     newBall.velocity.x += gravityAlongSlope * Math.cos(slopeAngle);
                     newBall.velocity.y += gravityAlongSlope * Math.sin(slopeAngle);
