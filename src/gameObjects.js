@@ -225,10 +225,19 @@ export class Wall {
 export class Slope {
     static allInstances = []; //Hold all wall instances
 
-    constructor (topX, topY, bottomX, bottomY) {
-        this.top = { x: topX, y: topY };
-        this.bottom = { x: bottomX, y: bottomY };
+    constructor (pointAx, pointAy, pointBx, pointBy) {
+        console.log (pointAx, pointAy, pointBx, pointBy);
+        // this.top = pointAy < pointBy ? { x: pointAx, y: pointAy } : { x: pointBx, y: pointBy };
+        // this.bottom = pointAy > pointBy ? { x: pointBx, y: pointBy } : { x: pointAx, y: pointAy };
+        if (pointAy < pointBy) {
+            this.top = { x: pointAx, y: pointAy };
+            this.bottom = { x: pointBx, y: pointBy };
+        } else {
+            this.top = { x: pointBx, y: pointBy };
+            this.bottom = { x: pointAx, y: pointAy };
+        }
         this.drawn = false;
+        console.log(this.top, this.bottom);
         Slope.allInstances.push(this);
     }
 

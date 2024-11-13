@@ -7,6 +7,7 @@ const slopeThreshold = 2;
 const friction = 0.01;
 const gravity = 0.25;
 const elasticityCoeff = 0.8;
+const repositionCoeff = 0.01;
 
 
 export function basicHandler() {
@@ -116,18 +117,21 @@ function checkSlopes() {
         let denominator = Math.sqrt(slopeVector.y ** 2 + slopeVector.x ** 2);
         let distance = numerator / denominator;
 
-        // Check if ball is within contact threshold (distance <= radius)
-        if (distance <= newBall.radius) {
-            // Check if the ball's center is within the bounds of the segment
-            let dotProductSlope = slopeVector.x * slopeVector.x + slopeVector.y * slopeVector.y;
-            let dotProductAtoBall = AtoBall.x * slopeVector.x + AtoBall.y * slopeVector.y;
-            let projection = dotProductAtoBall / dotProductSlope;
+        // Check if the ball's center is within the bounds of the segment
+        let dotProductSlope = slopeVector.x * slopeVector.x + slopeVector.y * slopeVector.y;
+        let dotProductAtoBall = AtoBall.x * slopeVector.x + AtoBall.y * slopeVector.y;
+        let projection = dotProductAtoBall / dotProductSlope;
+            
+        if (projection >= 0 && projection <= 1 && distance <= newBall.radius) {
+            console.log('top', top, 'bottom', bottom);
+
+            // Ball is in contact with this slope
+            console.log("Ball is in contact with slope", slope);
             let normalSlopeVector = {x: - slopeVector.y, y: slopeVector.x };
-            // if (normalSlopeVector.y < 0) {
-            //     normalSlopeVector = { x: slopeVector.y, y: -slopeVector.x };
-            // }
             const magnitude = Math.sqrt(normalSlopeVector.x ** 2 + normalSlopeVector.y ** 2);
             const normalizedSlopeVector = { x: normalSlopeVector.x / magnitude, y: normalSlopeVector.y / magnitude };
+            let normalSlopeDotProduct = AtoBall.x * normalSlopeVector.x + AtoBall.y * normalSlopeVector.y;
+
             // Find perpendicular and parallel components of velocity
             const dotProduct = newBall.velocity.x * normalizedSlopeVector.x + newBall.velocity.y * normalizedSlopeVector.y;
             const perpendicularVelocity = { x: normalizedSlopeVector.x * dotProduct, y: normalizedSlopeVector.y * dotProduct };
@@ -135,40 +139,43 @@ function checkSlopes() {
                 x: newBall.velocity.x - perpendicularVelocity.x,
                 y: newBall.velocity.y - perpendicularVelocity.y
             };
-            if (projection >= 0 && projection <= 1) {
-                // Ball is in contact with this slope
-                console.log("Ball is in contact with slope", slope);
 
-                // Check if the perpendicular velocity is below the threshold to transition to sliding
-                if (Math.hypot(perpendicularVelocity.x, perpendicularVelocity.y) < slopeThreshold) {
-                    // Set perpendicular velocity to zero for sliding
-                    newBall.velocity = parallelVelocity;
-                    newBall.velocity.y -= 0.25; // TEMPORARY FIX TO SHUT OFF GENERAL GRAVITY
-                    // Add gravity parallel to the slope
-                    const gravityAlongSlope = gravity * Math.sin(slopeAngle); // Use slope angle
-                    console.log(gravityAlongSlope);
-                    newBall.velocity.x += gravityAlongSlope * Math.cos(slopeAngle);
-                    newBall.velocity.y += gravityAlongSlope * Math.sin(slopeAngle);
-                    //Add friction while sliding
-                    const slopeFriction = friction * gravityAlongSlope;
-                    newBall.velocity.x -= slopeFriction * Math.cos(slopeAngle);
-                    newBall.velocity.y -= slopeFriction * Math.sin(slopeAngle);
-                    // console.log(newBall.velocity);
+            // Check if the perpendicular velocity is below the threshold to transition to sliding
+            if (normalSlopeDotProduct > 0 && Math.hypot(perpendicularVelocity.x, perpendicularVelocity.y) < slopeThreshold - repositionCoeff ||
+                normalSlopeDotProduct < 0 && Math.hypot(perpendicularVelocity.x, perpendicularVelocity.y) < slopeThreshold + repositionCoeff) {
+                // slideLogic();
+                // Set perpendicular velocity to zero for sliding
+                newBall.velocity = parallelVelocity;
+                newBall.velocity.y -= 0.25; // TEMPORARY FIX TO SHUT OFF GENERAL GRAVITY
+                // Add gravity parallel to the slope
+                const gravityAlongSlope = gravity * Math.sin(slopeAngle); // Use slope angle
+                newBall.velocity.x += gravityAlongSlope * Math.cos(slopeAngle);
+                newBall.velocity.y += gravityAlongSlope * Math.sin(slopeAngle);
+                //Add friction while sliding
+                const slopeFriction = friction * gravityAlongSlope;
+                newBall.velocity.x -= slopeFriction * Math.cos(slopeAngle);
+                newBall.velocity.y -= slopeFriction * Math.sin(slopeAngle);
+            } else {
+                console.log('SLOPE BOUNCE');
+                // Handle bounce by subtracting 2*(v . n)*n and applying elasticity
+                const bounceVelocity = {
+                    x: newBall.velocity.x - 2 * perpendicularVelocity.x,
+                    y: newBall.velocity.y - 2 * perpendicularVelocity.y
+                };
+                newBall.velocity.x = bounceVelocity.x * elasticityCoeff * 0.6;
+                newBall.velocity.y = bounceVelocity.y * elasticityCoeff * 0.6;
+
+                //Offset position to avoid overlaps  
+                if (normalSlopeDotProduct > 0) {
+                    // Ball is outside the slope; add offset to push it outward
+                    newBall.position.x += normalSlopeVector.x * repositionCoeff;
+                    newBall.position.y += normalSlopeVector.y * repositionCoeff;
                 } else {
-                    // Handle bounce by subtracting 2*(v . n)*n and applying elasticity
-                    const bounceVelocity = {
-                        x: newBall.velocity.x - 2 * perpendicularVelocity.x,
-                        y: newBall.velocity.y - 2 * perpendicularVelocity.y
-                    };
-                    newBall.velocity.x = bounceVelocity.x * elasticityCoeff * 0.6;
-                    newBall.velocity.y = bounceVelocity.y * elasticityCoeff * 0.6;
-    
-                    //Offset position to avoid overlaps
-                    newBall.position.x += normalSlopeVector.x * 0.01;
-                    newBall.position.y += normalSlopeVector.y * 0.01;
+                    // Ball is inside the slope; subtract offset to push it outward
+                    newBall.position.x -= normalSlopeVector.x * repositionCoeff;
+                    newBall.position.y -= normalSlopeVector.y * repositionCoeff;
                 }
-
-            } 
-        }
+            }
+        } 
     });
 }
