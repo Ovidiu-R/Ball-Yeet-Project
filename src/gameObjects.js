@@ -5,11 +5,12 @@ import bricks from './media/bricks-small.jpg';
 import rust from './media/rust-small.jpg';
 import metal1 from './media/metal-tiny1.jpg';
 import metal2 from './media/metal-vent-tiny.jpg';
+import walnut from './media/walnut-small.jpg';
 let staticCanvas = document.getElementById('staticCanvas');
 let sCtx = staticCanvas.getContext('2d');
 let dynamicCanvas = document.getElementById('dynamicCanvas');
 let dCtx = dynamicCanvas.getContext('2d');
-let mainBackground, secondaryBackground, goalPostFill, goalFill;
+let mainBackground, secondaryBackground, goalPostFill, goalFill, slopeEdge;
 
 // hoopFill = await loadImage (rust);
 // B A L L
@@ -227,8 +228,6 @@ export class Slope {
 
     constructor (pointAx, pointAy, pointBx, pointBy) {
         console.log (pointAx, pointAy, pointBx, pointBy);
-        // this.top = pointAy < pointBy ? { x: pointAx, y: pointAy } : { x: pointBx, y: pointBy };
-        // this.bottom = pointAy > pointBy ? { x: pointBx, y: pointBy } : { x: pointAx, y: pointAy };
         if (pointAy < pointBy) {
             this.top = { x: pointAx, y: pointAy };
             this.bottom = { x: pointBx, y: pointBy };
@@ -242,10 +241,28 @@ export class Slope {
     }
 
     draw() {
-        sCtx.beginPath();
-        sCtx.moveTo(this.top.x, this.top.y);
-        sCtx.lineTo(this.bottom.x, this.bottom.y);
-        sCtx.stroke();   
+        const slopeEdgeWidth = 10;
+        if (this.top.x > this.bottom.x) {
+            //Draw slope edge
+            const pattern = sCtx.createPattern(slopeEdge, 'repeat');
+            sCtx.fillStyle = pattern;
+            sCtx.strokeStyle = 'black';
+            sCtx.lineWidth = 1;
+            sCtx.beginPath();
+            sCtx.moveTo(this.top.x, this.top.y);
+            sCtx.lineTo(this.bottom.x, this.bottom.y);
+            sCtx.lineTo(this.bottom.x + slopeEdgeWidth, this.bottom.y);
+            sCtx.lineTo(this.top.x + slopeEdgeWidth, this.top.y);
+            sCtx.fill();  
+            sCtx.stroke();
+
+            //Draw slope body
+
+        }
+        // sCtx.beginPath();
+        // sCtx.moveTo(this.top.x, this.top.y);
+        // sCtx.lineTo(this.bottom.x, this.bottom.y);
+        // sCtx.stroke();   
     }
 }
 
@@ -347,6 +364,7 @@ export async function loadImages() {
         secondaryBackground = await loadImage(bricks);
         goalPostFill = await loadImage(metal1);
         goalFill = await loadImage(metal2);
+        slopeEdge = await loadImage(walnut);
     } catch (error) {
         console.error(error);
     }
@@ -366,15 +384,17 @@ export async function drawStaticCanvas() {
         goalPost.drawn = true;
     }
 
-    if (Wall.allInstances[0].drawn == false) {
-        Wall.allInstances.forEach(obj => obj.draw());
-        Wall.allInstances[0].drawn = true;
-    }
     if (Slope.allInstances[0].drawn == false) {
         Slope.allInstances.forEach(obj => obj.draw());
         Slope.allInstances[0].drawn = true;
         
     }
+
+    if (Wall.allInstances[0].drawn == false) {
+        Wall.allInstances.forEach(obj => obj.draw());
+        Wall.allInstances[0].drawn = true;
+    }
+
 
 }
 
