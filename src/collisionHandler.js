@@ -141,9 +141,12 @@ function checkSlopes() {
             };
 
             // Check if the perpendicular velocity is below the threshold to transition to sliding
-            if (!slope.onGround && normalSlopeDotProduct > 0 && Math.hypot(perpendicularVelocity.x, perpendicularVelocity.y) < slopeThreshold - repositionCoeff ||
-                normalSlopeDotProduct < 0 && Math.hypot(perpendicularVelocity.x, perpendicularVelocity.y) < slopeThreshold + repositionCoeff) {
-                // slideLogic();
+            if (slope.onGround && 
+                (
+                    (normalSlopeDotProduct > 0 && Math.hypot(perpendicularVelocity.x, perpendicularVelocity.y) < slopeThreshold - repositionCoeff) ||
+                    (normalSlopeDotProduct < 0 && Math.hypot(perpendicularVelocity.x, perpendicularVelocity.y) < slopeThreshold + repositionCoeff)
+                ) 
+            ){
                 // Set perpendicular velocity to zero for sliding
                 newBall.velocity = parallelVelocity;
                 newBall.velocity.y -= 0.25; // TEMPORARY FIX TO SHUT OFF GENERAL GRAVITY
