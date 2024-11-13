@@ -141,7 +141,7 @@ function checkSlopes() {
             };
 
             // Check if the perpendicular velocity is below the threshold to transition to sliding
-            if (normalSlopeDotProduct > 0 && Math.hypot(perpendicularVelocity.x, perpendicularVelocity.y) < slopeThreshold - repositionCoeff ||
+            if (!slope.onGround && normalSlopeDotProduct > 0 && Math.hypot(perpendicularVelocity.x, perpendicularVelocity.y) < slopeThreshold - repositionCoeff ||
                 normalSlopeDotProduct < 0 && Math.hypot(perpendicularVelocity.x, perpendicularVelocity.y) < slopeThreshold + repositionCoeff) {
                 // slideLogic();
                 // Set perpendicular velocity to zero for sliding

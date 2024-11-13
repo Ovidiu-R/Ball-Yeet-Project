@@ -24,7 +24,7 @@ export function fpsCounter(time) {
     ctx.clearRect(0, 0, 64, 17);
 
     ctx.font = '12px Arial';
-    ctx.fillStyle = 'black';
+    ctx.fillStyle = 'white';
     ctx.fillText(`FPS: ${fps}`, 10, 15);
     // requestAnimationFrame(fpsCounter);
 }

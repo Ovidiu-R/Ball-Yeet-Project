@@ -4,7 +4,7 @@ import { gameLoop } from './gameLoop.js';
 
 export let newBall;
 export let newArrow;
-export let newWall, newWall2, ground, goal, goalPost, winMessage, canvasBackground, newSlope, newSlope2;
+export let newWall, newWall2, ground, goal, goalPost, winMessage, canvasBackground, newSlope, newSlope2, newSlope3, newSlope4;
 // export let staticCanvas = document.getElementById('staticCanvas');
 // export let sCtx = staticCanvas.getContext('2d');
 // export let dynamicCanvas = document.getElementById('dynamicCanvas');
@@ -29,7 +29,8 @@ document.addEventListener('DOMContentLoaded', () => {
     canvasBackground = new CanvasBackground();
     newSlope = new Slope (700, 230, 350, 550);
     newSlope2 = new Slope (900, 552, 750, 360);  //Must visualise canvas flipping 90 degrees clockwise when visualising top and bottom
-
+    newSlope3 = new Slope (0, 300, 300, 0, false); //Fixed onto ceiling
+    newSlope4 = new Slope (1300, 0, 1600, 300, false);
     async function startGame() {
         await loadImages(); // Load all images
         gameLoop();         // Start the game loop
