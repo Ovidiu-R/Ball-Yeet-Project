@@ -1,7 +1,14 @@
 import { newBall, goal } from ".";
 import { Wall, Slope } from "./gameObjects";
 import { scorePoint } from "./gameState";
+import bounceSound from './media/basketball_bounce.mp3';
+import hoopBounceSound from './media/basketball_hoop_bounce.mp3';
+// const bounce = new Audio (bounceSound);
+// bounce.load();
+// const hoopBounce = new Audio (hoopBounceSound);
+// hoopBounce.load();
 const canvas = document.getElementById('staticCanvas'); //Too lazy to import
+const canvasD = document.getElementById('dynamicCanvas');
 const offsetDistance = 4;
 const slopeThreshold = 2;
 const friction = 0.01;
@@ -9,6 +16,48 @@ const gravity = 0.25;
 const elasticityCoeff = 0.8;
 const repositionCoeff = 0.01;
 
+//T E S T
+
+                            // let audioContext;
+                            // let collisionBuffer;
+
+                            // // Function to initialize the audio context and load the sound
+                            // async function initializeAudio() {
+                            //     // Only create the AudioContext if it doesn't already exist
+                            //     if (!audioContext) {
+                            //         audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                            //     }
+
+                            //     // Explicitly resume the AudioContext in case it is suspended
+                            //     await audioContext.resume();
+
+                            //     // Load and decode the audio file
+                            //     const response = await fetch(bounceSound);
+                            //     const arrayBuffer = await response.arrayBuffer();
+                            //     collisionBuffer = await audioContext.decodeAudioData(arrayBuffer);
+                            // }
+
+                            // // Function to play the collision sound
+                            // function playCollisionSound() {
+                            //     if (audioContext && collisionBuffer) {
+                            //         const soundSource = audioContext.createBufferSource();
+                            //         soundSource.buffer = collisionBuffer;
+                            //         soundSource.connect(audioContext.destination);
+                            //         soundSource.start(0); // Play immediately
+                            //     }
+                            // }
+
+                            // // Set up event listener on canvas for mouse movement
+                            
+                            // canvasD.addEventListener("click", async function onFirstClick() {
+                            //     if (!audioContext) {
+                            //         await initializeAudio();
+                            //     }
+                            
+                            //     canvasD.removeEventListener("click", onFirstClick);
+                            // });
+
+//T E S T
 
 export function basicHandler() {
     checkCanvasEdges();
@@ -21,10 +70,13 @@ function checkCanvasEdges() {
     if (newBall.position.y + newBall.velocity.y > canvas.height - newBall.radius ||
         newBall.position.y + newBall.velocity.y < newBall.radius) {
         newBall.collisionData.vertical = true;
+        playBounceSounds();
     }
     if (newBall.position.x + newBall.velocity.x > canvas.width - newBall.radius || 
         newBall.position.x + newBall.velocity.x < newBall.radius) {
         newBall.collisionData.horizontal = true;
+        // playCollisionSound()
+        // playBounceSounds();
     }
 }
 
@@ -37,6 +89,7 @@ function checkWalls() {
             if (distance <= newBall.radius) {
                 console.log('CORNER!');
                 getBounceVelocity(corner);
+                // playBounceSounds();
             }
         });
         //Handle 'flat' surface collisions
@@ -45,13 +98,14 @@ function checkWalls() {
             newBall.position.y + newBall.velocity.y >= obj.topLeft.y &&
             newBall.position.y + newBall.velocity.y <= obj.bottomLeft.y - newBall.radius) {
                 newBall.collisionData.horizontal = true;
-
+                // playBounceSounds();
             }
         if (newBall.position.y + newBall.velocity.y >= obj.topLeft.y - newBall.radius &&
             newBall.position.y + newBall.velocity.y <= obj.bottomLeft.y + newBall.radius &&
             newBall.position.x + newBall.velocity.x >= obj.bottomLeft.x &&
             newBall.position.x + newBall.velocity.x <= obj.bottomRight.x) {
                 newBall.collisionData.vertical = true;
+                // playBounceSounds();
         }
     });
 }
@@ -74,6 +128,7 @@ function checkGoal() {
                 y: rim.y + normal.y * (goal.girth /2)
             };
             getBounceVelocity(contactPoint);
+            // playBounceSounds('hoop');
         }
     });
 
@@ -178,7 +233,18 @@ function checkSlopes() {
                     newBall.position.x -= normalSlopeVector.x * repositionCoeff;
                     newBall.position.y -= normalSlopeVector.y * repositionCoeff;
                 }
+                // playBounceSounds();
             }
         } 
     });
+}
+
+function playBounceSounds(type) {
+    if (type == 'hoop') {
+        hoopBounce.loop = false;
+        hoopBounce.play();
+    } else {
+        bounce.loop = false;
+        bounce.play();
+    }
 }
