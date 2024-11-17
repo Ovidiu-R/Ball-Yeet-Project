@@ -71,14 +71,14 @@ export class Ball {
             this.velocity.x = -this.velocity.x * 0.8;
             this.collisionData.horizontal = false;
             setCollisionSoundVolume(Math.abs(this.velocity.x));
-            playCollisionSound();
+            playCollisionSound('standard');
         } else {this.position.x += this.velocity.x;};
         if (this.collisionData.vertical === true) {
             this.velocity.y = -this.velocity.y * 0.8;
             this.collisionData.vertical = false;
             if (this.isGrounded !== true && Math.abs(this.velocity.y <= 0.7)) {
                 setCollisionSoundVolume(Math.abs(this.velocity.y));
-                playCollisionSound();
+                playCollisionSound('standard');
             }
         } else {this.position.y += this.velocity.y;}
 
