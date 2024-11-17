@@ -1,4 +1,5 @@
 import { endY, getLaunchArrowCoords } from './interactivityHandler';
+import { playCollisionSound, setCollisionSoundVolume } from './collisionHandler';
 import { newBall, canvasBackground, goalPost, newSlope } from ".";
 import ebony from './media/ebony-small.jpg';
 import bricks from './media/bricks-small.jpg';
@@ -69,10 +70,16 @@ export class Ball {
         if (this.collisionData.horizontal === true) {
             this.velocity.x = -this.velocity.x * 0.8;
             this.collisionData.horizontal = false;
+            setCollisionSoundVolume(Math.abs(this.velocity.x));
+            playCollisionSound();
         } else {this.position.x += this.velocity.x;};
         if (this.collisionData.vertical === true) {
             this.velocity.y = -this.velocity.y * 0.8;
             this.collisionData.vertical = false;
+            if (this.isGrounded !== true && Math.abs(this.velocity.y <= 0.7)) {
+                setCollisionSoundVolume(Math.abs(this.velocity.y));
+                playCollisionSound();
+            }
         } else {this.position.y += this.velocity.y;}
 
         if (this.isLaunched && Math.abs(this.velocity.y) < 0.1 && this.position.y > (staticCanvas.height - this.radius - 150)){

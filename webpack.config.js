@@ -35,5 +35,9 @@ module.exports = {
 			type: 'asset/resource',
 		  },
 		]
-	  }
+	  },
+	  devServer: {
+        static: './dist', // Directory to serve
+        port: 8080,
+      },
 	};

@@ -15,49 +15,49 @@ const friction = 0.01;
 const gravity = 0.25;
 const elasticityCoeff = 0.8;
 const repositionCoeff = 0.01;
+const maxSpeed = 30;
 
-//T E S T
+//B O U N C E    A U D I O
 
-                            // let audioContext;
-                            // let collisionBuffer;
+const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+const gainNode = audioContext.createGain();
 
-                            // // Function to initialize the audio context and load the sound
-                            // async function initializeAudio() {
-                            //     // Only create the AudioContext if it doesn't already exist
-                            //     if (!audioContext) {
-                            //         audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                            //     }
+// Function to load and decode audio
+async function loadCollisionSound() {
+    const response = await fetch(bounceSound);
+    const arrayBuffer = await response.arrayBuffer();
+    return audioContext.decodeAudioData(arrayBuffer);
+}
 
-                            //     // Explicitly resume the AudioContext in case it is suspended
-                            //     await audioContext.resume();
+// Load the collision sound and save it in an AudioBuffer
+let collisionBuffer;
+loadCollisionSound().then(buffer => {
+    collisionBuffer = buffer;
+});
 
-                            //     // Load and decode the audio file
-                            //     const response = await fetch(bounceSound);
-                            //     const arrayBuffer = await response.arrayBuffer();
-                            //     collisionBuffer = await audioContext.decodeAudioData(arrayBuffer);
-                            // }
+export function setCollisionSoundVolume(speed) {
+    // Normalize speed to a range between 0 and 1
+    const normalizedSpeed = Math.min(Math.max(speed / maxSpeed, 0), 1);
 
-                            // // Function to play the collision sound
-                            // function playCollisionSound() {
-                            //     if (audioContext && collisionBuffer) {
-                            //         const soundSource = audioContext.createBufferSource();
-                            //         soundSource.buffer = collisionBuffer;
-                            //         soundSource.connect(audioContext.destination);
-                            //         soundSource.start(0); // Play immediately
-                            //     }
-                            // }
+    // Map normalized speed to volume (optional: use a curve for smoother control)
+    const volume = Math.pow(normalizedSpeed, 0.5); // Example: square root for a smoother increase
 
-                            // // Set up event listener on canvas for mouse movement
-                            
-                            // canvasD.addEventListener("click", async function onFirstClick() {
-                            //     if (!audioContext) {
-                            //         await initializeAudio();
-                            //     }
-                            
-                            //     canvasD.removeEventListener("click", onFirstClick);
-                            // });
+    // Set the volume
+    gainNode.gain.value = volume;
 
-//T E S T
+    console.log(`Speed: ${speed}, Volume: ${volume.toFixed(2)}`);
+}
+
+// Function to play the collision sound using AudioBuffer
+export function playCollisionSound() {
+    const soundSource = audioContext.createBufferSource();
+    soundSource.buffer = collisionBuffer;
+    soundSource.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    soundSource.start(0); // Plays the sound immediately
+}
+
+//C O L L I S I O N    L O G I C
 
 export function basicHandler() {
     checkCanvasEdges();
@@ -70,12 +70,13 @@ function checkCanvasEdges() {
     if (newBall.position.y + newBall.velocity.y > canvas.height - newBall.radius ||
         newBall.position.y + newBall.velocity.y < newBall.radius) {
         newBall.collisionData.vertical = true;
-        playBounceSounds();
+        // playBounceSounds();
+        playCollisionSound()
     }
     if (newBall.position.x + newBall.velocity.x > canvas.width - newBall.radius || 
         newBall.position.x + newBall.velocity.x < newBall.radius) {
         newBall.collisionData.horizontal = true;
-        // playCollisionSound()
+        playCollisionSound()
         // playBounceSounds();
     }
 }
@@ -99,6 +100,7 @@ function checkWalls() {
             newBall.position.y + newBall.velocity.y <= obj.bottomLeft.y - newBall.radius) {
                 newBall.collisionData.horizontal = true;
                 // playBounceSounds();
+                // playCollisionSound()
             }
         if (newBall.position.y + newBall.velocity.y >= obj.topLeft.y - newBall.radius &&
             newBall.position.y + newBall.velocity.y <= obj.bottomLeft.y + newBall.radius &&
@@ -106,6 +108,7 @@ function checkWalls() {
             newBall.position.x + newBall.velocity.x <= obj.bottomRight.x) {
                 newBall.collisionData.vertical = true;
                 // playBounceSounds();
+                // playCollisionSound()
         }
     });
 }
@@ -129,6 +132,7 @@ function checkGoal() {
             };
             getBounceVelocity(contactPoint);
             // playBounceSounds('hoop');
+            playCollisionSound()
         }
     });
 
@@ -233,18 +237,11 @@ function checkSlopes() {
                     newBall.position.x -= normalSlopeVector.x * repositionCoeff;
                     newBall.position.y -= normalSlopeVector.y * repositionCoeff;
                 }
-                // playBounceSounds();
+                //Calculate perpendicular speed in order to adjust ball bounce volume
+                const perpendicularMagnitude = Math.hypot(perpendicularVelocity.x, perpendicularVelocity.y);
+                setCollisionSoundVolume(perpendicularMagnitude);
+                playCollisionSound()
             }
         } 
     });
-}
-
-function playBounceSounds(type) {
-    if (type == 'hoop') {
-        hoopBounce.loop = false;
-        hoopBounce.play();
-    } else {
-        bounce.loop = false;
-        bounce.play();
-    }
 }

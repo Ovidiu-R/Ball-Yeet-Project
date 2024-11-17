@@ -41,7 +41,8 @@ function getMouseUpCoords (e) {
 
     //Calculate velocity when the mouse is released
     launchVelocity = calculateLaunchVelocity(startX, startY, endX, endY);
-    console.log(launchVelocity);
+    newBall.isGrounded = false;
+    console.log('launchvel', launchVelocity);
 }
 
 function trackMouseMove(e) {
